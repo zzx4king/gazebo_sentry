@@ -1,0 +1,19 @@
+# sentry_control 节点配置
+# 串口协议与 /home/robomaster/project/test 目录已验证脚本一致:
+#   帧: Header(0xA5) + Type + Len + Data + CRC8/MAXIM
+sentry_control:
+  ros__parameters:
+    # 串口设备 (MCU USART6 指令口)
+    port: /dev/ttyUSB0
+    # 波特率 (MCU 端固定 460800, 8N1)
+    baudrate: 460800
+    # 角速度缩放系数: 发送前 angular / angular_divisor
+    angular_divisor: 1.42
+    # 订阅的 Nav2 速度话题
+    # Jazzy 速度链路: controller -> /cmd_vel_nav -> velocity_smoother -> /cmd_vel_smoothed
+    # /cmd_vel 无数据 (collision_monitor 未转发), 故直接订阅平滑后的最终输出
+    cmd_vel_topic: /cmd_vel_smoothed
+    # 指令发送频率 (Hz), 须满足 与 MCU 500ms 超时约束 (50Hz = 20ms 间隔)
+    send_rate: 50.0
+    # cmd_vel 超时 (秒): 超过该时间未收到新指令则发送零速 (安全保护)
+    cmd_vel_timeout: 0.5

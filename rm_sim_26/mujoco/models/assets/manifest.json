@@ -1,0 +1,430 @@
+{
+ "base_link": [
+  {
+   "file": "base_link__accent.obj",
+   "material": "accent",
+   "rgba": [
+    0.33725490196078434,
+    0.6235294117647059,
+    0.8470588235294118,
+    1.0
+   ],
+   "faces": 24205
+  },
+  {
+   "file": "base_link__aluminium.obj",
+   "material": "aluminium",
+   "rgba": [
+    0.3411764705882353,
+    0.3568627450980392,
+    0.3764705882352941,
+    1.0
+   ],
+   "faces": 30492
+  },
+  {
+   "file": "base_link__darkbox.obj",
+   "material": "darkbox",
+   "rgba": [
+    0.07450980392156863,
+    0.0784313725490196,
+    0.08235294117647059,
+    1.0
+   ],
+   "faces": 3594
+  },
+  {
+   "file": "base_link__fiberglass.obj",
+   "material": "fiberglass",
+   "rgba": [
+    0.01568627450980392,
+    0.01568627450980392,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 52684
+  },
+  {
+   "file": "base_link__lightbar.obj",
+   "material": "lightbar",
+   "rgba": [
+    0.7098039215686275,
+    0.7294117647058823,
+    0.7686274509803922,
+    1.0
+   ],
+   "faces": 20145
+  },
+  {
+   "file": "base_link__misc.obj",
+   "material": "misc",
+   "rgba": [
+    0.01568627450980392,
+    0.0196078431372549,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 7616
+  },
+  {
+   "file": "base_link__printed.obj",
+   "material": "printed",
+   "rgba": [
+    0.023529411764705882,
+    0.023529411764705882,
+    0.027450980392156862,
+    1.0
+   ],
+   "faces": 192801
+  },
+  {
+   "file": "base_link__referee.obj",
+   "material": "referee",
+   "rgba": [
+    0.6039215686274509,
+    0.6196078431372549,
+    0.6549019607843137,
+    1.0
+   ],
+   "faces": 83476
+  },
+  {
+   "file": "base_link__steel.obj",
+   "material": "steel",
+   "rgba": [
+    0.2549019607843137,
+    0.26666666666666666,
+    0.28627450980392155,
+    1.0
+   ],
+   "faces": 994
+  }
+ ],
+ "gimbal_link": [
+  {
+   "file": "gimbal_link__accent.obj",
+   "material": "accent",
+   "rgba": [
+    0.7294117647058823,
+    0.3568627450980392,
+    0.023529411764705882,
+    1.0
+   ],
+   "faces": 20310
+  },
+  {
+   "file": "gimbal_link__acrylic.obj",
+   "material": "acrylic",
+   "rgba": [
+    0.7098039215686275,
+    0.788235294117647,
+    0.8274509803921568,
+    0.1803921568627451
+   ],
+   "faces": 1106
+  },
+  {
+   "file": "gimbal_link__aluminium.obj",
+   "material": "aluminium",
+   "rgba": [
+    0.3411764705882353,
+    0.3568627450980392,
+    0.3764705882352941,
+    1.0
+   ],
+   "faces": 11644
+  },
+  {
+   "file": "gimbal_link__camera.obj",
+   "material": "camera",
+   "rgba": [
+    0.3411764705882353,
+    0.35294117647058826,
+    0.3803921568627451,
+    1.0
+   ],
+   "faces": 280
+  },
+  {
+   "file": "gimbal_link__fiberglass.obj",
+   "material": "fiberglass",
+   "rgba": [
+    0.01568627450980392,
+    0.01568627450980392,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 74138
+  },
+  {
+   "file": "gimbal_link__lidar.obj",
+   "material": "lidar",
+   "rgba": [
+    0.4470588235294118,
+    0.47843137254901963,
+    0.5215686274509804,
+    1.0
+   ],
+   "faces": 46116
+  },
+  {
+   "file": "gimbal_link__misc.obj",
+   "material": "misc",
+   "rgba": [
+    0.01568627450980392,
+    0.0196078431372549,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 1696
+  },
+  {
+   "file": "gimbal_link__pcb.obj",
+   "material": "pcb",
+   "rgba": [
+    0.011764705882352941,
+    0.06274509803921569,
+    0.01568627450980392,
+    1.0
+   ],
+   "faces": 17686
+  },
+  {
+   "file": "gimbal_link__printed.obj",
+   "material": "printed",
+   "rgba": [
+    0.023529411764705882,
+    0.023529411764705882,
+    0.027450980392156862,
+    1.0
+   ],
+   "faces": 66923
+  },
+  {
+   "file": "gimbal_link__referee.obj",
+   "material": "referee",
+   "rgba": [
+    0.6039215686274509,
+    0.6196078431372549,
+    0.6549019607843137,
+    1.0
+   ],
+   "faces": 4464
+  },
+  {
+   "file": "gimbal_link__steel.obj",
+   "material": "steel",
+   "rgba": [
+    0.2549019607843137,
+    0.26666666666666666,
+    0.28627450980392155,
+    1.0
+   ],
+   "faces": 3471
+  }
+ ],
+ "omni_wheel": [
+  {
+   "file": "omni_wheel__fiberglass.obj",
+   "material": "fiberglass",
+   "rgba": [
+    0.01568627450980392,
+    0.01568627450980392,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 1612
+  },
+  {
+   "file": "omni_wheel__printed.obj",
+   "material": "printed",
+   "rgba": [
+    0.023529411764705882,
+    0.023529411764705882,
+    0.027450980392156862,
+    1.0
+   ],
+   "faces": 496
+  },
+  {
+   "file": "omni_wheel__roller.obj",
+   "material": "roller",
+   "rgba": [
+    0.7490196078431373,
+    0.7490196078431373,
+    0.7098039215686275,
+    1.0
+   ],
+   "faces": 8736
+  },
+  {
+   "file": "omni_wheel__steel.obj",
+   "material": "steel",
+   "rgba": [
+    0.2549019607843137,
+    0.26666666666666666,
+    0.28627450980392155,
+    1.0
+   ],
+   "faces": 24832
+  }
+ ],
+ "pitch_link": [
+  {
+   "file": "pitch_link__accent.obj",
+   "material": "accent",
+   "rgba": [
+    0.1411764705882353,
+    0.10588235294117647,
+    0.0,
+    1.0
+   ],
+   "faces": 46216
+  },
+  {
+   "file": "pitch_link__acrylic.obj",
+   "material": "acrylic",
+   "rgba": [
+    0.7098039215686275,
+    0.788235294117647,
+    0.8274509803921568,
+    0.1803921568627451
+   ],
+   "faces": 268
+  },
+  {
+   "file": "pitch_link__aluminium.obj",
+   "material": "aluminium",
+   "rgba": [
+    0.3411764705882353,
+    0.3568627450980392,
+    0.3764705882352941,
+    1.0
+   ],
+   "faces": 3768
+  },
+  {
+   "file": "pitch_link__camera.obj",
+   "material": "camera",
+   "rgba": [
+    0.3411764705882353,
+    0.35294117647058826,
+    0.3803921568627451,
+    1.0
+   ],
+   "faces": 19642
+  },
+  {
+   "file": "pitch_link__fiberglass.obj",
+   "material": "fiberglass",
+   "rgba": [
+    0.01568627450980392,
+    0.01568627450980392,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 24164
+  },
+  {
+   "file": "pitch_link__misc.obj",
+   "material": "misc",
+   "rgba": [
+    0.01568627450980392,
+    0.0196078431372549,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 644
+  },
+  {
+   "file": "pitch_link__printed.obj",
+   "material": "printed",
+   "rgba": [
+    0.023529411764705882,
+    0.023529411764705882,
+    0.027450980392156862,
+    1.0
+   ],
+   "faces": 54523
+  },
+  {
+   "file": "pitch_link__referee.obj",
+   "material": "referee",
+   "rgba": [
+    0.6392156862745098,
+    0.6549019607843137,
+    0.6745098039215687,
+    1.0
+   ],
+   "faces": 13290
+  },
+  {
+   "file": "pitch_link__steel.obj",
+   "material": "steel",
+   "rgba": [
+    0.2549019607843137,
+    0.26666666666666666,
+    0.28627450980392155,
+    1.0
+   ],
+   "faces": 25361
+  }
+ ],
+ "small_yaw_link": [
+  {
+   "file": "small_yaw_link__aluminium.obj",
+   "material": "aluminium",
+   "rgba": [
+    0.3411764705882353,
+    0.3568627450980392,
+    0.3764705882352941,
+    1.0
+   ],
+   "faces": 2280
+  },
+  {
+   "file": "small_yaw_link__fiberglass.obj",
+   "material": "fiberglass",
+   "rgba": [
+    0.01568627450980392,
+    0.01568627450980392,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 11916
+  },
+  {
+   "file": "small_yaw_link__misc.obj",
+   "material": "misc",
+   "rgba": [
+    0.01568627450980392,
+    0.0196078431372549,
+    0.0196078431372549,
+    1.0
+   ],
+   "faces": 11185
+  },
+  {
+   "file": "small_yaw_link__printed.obj",
+   "material": "printed",
+   "rgba": [
+    0.023529411764705882,
+    0.023529411764705882,
+    0.027450980392156862,
+    1.0
+   ],
+   "faces": 16011
+  },
+  {
+   "file": "small_yaw_link__steel.obj",
+   "material": "steel",
+   "rgba": [
+    0.2549019607843137,
+    0.26666666666666666,
+    0.28627450980392155,
+    1.0
+   ],
+   "faces": 144
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+# 仿真运行时保存本文件即刻生效, 无需重启。
+# 解析失败时沿用当前参数。
+
+[projectile]
+# 初速不是设定值 —— 弹丸由两个摩擦轮夹住加速, 出膛速度是仿真的结果。
+# 要改初速就改这里的轮速: 理论上 v ≈ ω × 0.030 m, 实际因打滑略低。
+fric_speed = 900.0      # 摩擦轮目标转速 rad/s (900 -> 轮面 27 m/s)
+feed_speed = 2.0        # 拨弹推进速度 m/s
+feed_offset = 0.045     # 送弹点相对枪口 site 的后移量 m
+spread_deg = 0.15       # 送弹位置扰动
+life_s = 6.0
+cooldown_s = 0.12
+
+# 弹丸经过摩擦轮时的步长。轮速 900 rad/s 下 dt=1ms 每步转 51°、接触点划过 27 mm
+# ——比弹丸直径还大, 摩擦求解失真, 初速会虚高 36%。步长收敛检验见 README。
+launch_dt = 2.0e-5
+
+# 弹仓与拨弹盘
+feeder_speed = 12.0     # 拨弹盘转速 rad/s (2006 电机), 决定供弹率
+auto_refill = true      # 剩余弹药不足 refill_below 时自动补满
+# 弹仓自然堆积容量实测 712 发 (tools/measure_mag_capacity.py), 阈值按整仓算
+refill_below = 40
+
+[gimbal]
+big_yaw_kp = 40.0
+big_yaw_kd = 4.0
+small_yaw_kp = 8.0
+small_yaw_kd = 0.5
+pitch_kp = 6.0
+pitch_kd = 0.4
+scan_enabled = false
+scan_yaw_speed = 0.4
+scan_pitch_range = [-0.2, 0.35]
+scan_pitch_speed = 0.5
+
+[chassis]
+wheel_radius = 0.076
+mount_radius = 0.245
+max_wheel_torque = 6.0
+drive_kp = 1.2

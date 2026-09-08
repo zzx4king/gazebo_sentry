@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!--
+  哨兵"烧饼" TF 树 (robot_state_publisher 用).
+  joint 名与 model.sdf 一致, 角度由 gz JointStatePublisher 经 bridge 提供.
+  坐标: base_link 原点=大yaw轴心(CAD原点面高度, 轮心上方20mm), 地面 z=-0.096.
+-->
+<robot name="sentry">
+
+  <link name="base_link"/>
+
+  <!-- 底盘本体 -->
+  <link name="chassis">
+    <visual>
+      <origin xyz="-0.0625 -0.0625 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://rm_sim_26/models/sentry/meshes/base_link.glb"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="base_link_to_chassis" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 全向轮 x4 (轮系 z=轮轴, 沿径向朝外) -->
+  <link name="wheel_fl_link">
+    <visual>
+      <geometry><mesh filename="package://rm_sim_26/models/sentry/meshes/omni_wheel.glb"/></geometry>
+    </visual>
+  </link>
+  <joint name="wheel_fl_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_fl_link"/>
+    <origin xyz="0.1732 0.1732 -0.020" rpy="0 1.5708 0.7854"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="wheel_rl_link">
+    <visual>
+      <geometry><mesh filename="package://rm_sim_26/models/sentry/meshes/omni_wheel.glb"/></geometry>
+    </visual>
+  </link>
+  <joint name="wheel_rl_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_rl_link"/>
+    <origin xyz="-0.1732 0.1732 -0.020" rpy="0 1.5708 2.3562"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="wheel_rr_link">
+    <visual>
+      <geometry><mesh filename="package://rm_sim_26/models/sentry/meshes/omni_wheel.glb"/></geometry>
+    </visual>
+  </link>
+  <joint name="wheel_rr_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_rr_link"/>
+    <origin xyz="-0.1732 -0.1732 -0.020" rpy="0 1.5708 -2.3562"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="wheel_fr_link">
+    <visual>
+      <geometry><mesh filename="package://rm_sim_26/models/sentry/meshes/omni_wheel.glb"/></geometry>
+    </visual>
+  </link>
+  <joint name="wheel_fr_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_fr_link"/>
+    <origin xyz="0.1732 -0.1732 -0.020" rpy="0 1.5708 -0.7854"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- 大yaw回转层 -->
+  <link name="gimbal_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://rm_sim_26/models/sentry/meshes/gimbal_link.glb"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="big_yaw_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="gimbal_link"/>
+    <origin xyz="0 0 0.0845" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- mid360 (斜装60°, 随大yaw回转; 原点为CAD装配原点, 光心偏移待校) -->
+  <link name="livox_lidar"/>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="gimbal_link"/>
+    <child link="livox_lidar"/>
+    <origin xyz="-0.1963 -0.0880 0.2516" rpy="1.0472 0 -1.3521"/>
+  </joint>
+
+  <!-- 小yaw -->
+  <link name="small_yaw_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://rm_sim_26/models/sentry/meshes/small_yaw_link.glb"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="small_yaw_joint" type="revolute">
+    <parent link="gimbal_link"/>
+    <child link="small_yaw_link"/>
+    <origin xyz="0 0.0585 0.1210" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="20"/>
+  </joint>
+
+  <!-- pitch 发射体 -->
+  <link name="pitch_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh filename="package://rm_sim_26/models/sentry/meshes/pitch_link.glb"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="pitch_joint" type="revolute">
+    <parent link="small_yaw_link"/>
+    <child link="pitch_link"/>
+    <origin xyz="0 0 0.169" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.35" upper="0.55" effort="10" velocity="20"/>
+  </joint>
+
+  <!-- 自瞄 IMU (DM-IMU-L1, pitch体上) -->
+  <link name="gimbal_imu"/>
+  <joint name="gimbal_imu_joint" type="fixed">
+    <parent link="pitch_link"/>
+    <child link="gimbal_imu"/>
+    <origin xyz="-0.0017 0.0055 0.0306" rpy="3.1416 0 1.5708"/>
+  </joint>
+
+  <!-- 自瞄相机安装点 (MV-CA016, pitch体上; 光轴朝向待自瞄组标定) -->
+  <link name="camera_mount"/>
+  <joint name="camera_mount_joint" type="fixed">
+    <parent link="pitch_link"/>
+    <child link="camera_mount"/>
+    <origin xyz="-0.0017 0.1395 0.0531" rpy="0 0 0"/>
+  </joint>
+
+</robot>

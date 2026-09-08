@@ -1,0 +1,172 @@
+<?xml version='1.0'?>
+<sdf version='1.9'>
+  <model name='rmul_2026'>
+    <static>true</static>
+    <link name='body'>
+      <!-- 原始网格: mm 单位, Y 轴朝下 (SW 导出: 地板面在 y=420mm, 墙顶在 y=0)。
+           scale 0.001 转米; roll -90° 将 (x,y,z) -> (x, z, -y),
+           再平移使地板面 (y=420mm) 落在 z=0、场地中心位于原点。
+           场地范围: x ∈ [-6.3, 6.3], y ∈ [-4.3, 4.3], 地板 z=0, 墙顶 z=0.42 -->
+      <pose>-6.3 -4.3 0.42 -1.57079632679 0 0</pose>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+      <!-- 分区着色: 网格已按结构拆分到 meshes/parts/（scripts/split_field_mesh.py 生成），
+           子网格与原 STL 顶点逐一一致; collision 仍用整块 rmul_2026.stl, 物理行为不变 -->
+      <visual name='floor'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/floor.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.10 0.12 0.11 1</ambient>
+          <diffuse>0.16 0.19 0.18 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='platform_top'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/platform_top.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.23 0.27 0.35 1</ambient>
+          <diffuse>0.38 0.45 0.58 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='mid_top'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/mid_top.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.27 0.29 0.30 1</ambient>
+          <diffuse>0.45 0.48 0.50 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='walls'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/walls.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.51 0.52 0.53 1</ambient>
+          <diffuse>0.85 0.86 0.88 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='structure_faces'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/structure_faces.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.47 0.35 0.06 1</ambient>
+          <diffuse>0.78 0.58 0.10 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='under_platform'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/under_platform.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.13 0.16 0.20 1</ambient>
+          <diffuse>0.22 0.26 0.33 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='underside'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/underside.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.07 0.07 0.07 1</ambient>
+          <diffuse>0.12 0.12 0.12 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='bumpers'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/bumpers.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.55 0.43 0.05 1</ambient>
+          <diffuse>0.92 0.72 0.08 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <!-- logo 凸起已移除(scripts/flatten_logo_marks.py), 改为颜色标识贴片+描边框;
+           地面已铲平(scripts/flatten_ground_plane.py): 中央 12mm 岛、四角 20mm 墩台、
+           0.5mm 凹坑全部压平到 z=0, 三个标识贴片均贴地板面: 中央黑 / 西北红 / 东南蓝 -->
+      <visual name='mark_center'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/mark_center.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.02 0.02 0.02 1</ambient>
+          <diffuse>0.03 0.03 0.03 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='mark_nw'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/mark_nw.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.45 0.06 0.06 1</ambient>
+          <diffuse>0.75 0.10 0.10 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <visual name='mark_se'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/parts/mark_se.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.07 0.13 0.43 1</ambient>
+          <diffuse>0.12 0.22 0.72 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <collision name='collision'>
+        <geometry>
+          <mesh>
+            <uri>model://rmul_2026/meshes/rmul_2026.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

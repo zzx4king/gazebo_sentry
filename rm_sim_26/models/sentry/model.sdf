@@ -1,0 +1,373 @@
+<?xml version="1.0"?>
+<!--
+  26赛季哨兵"烧饼" 仿真模型
+  几何/位姿/质量来源: SolidWorks 总装 烧饼备份11.14 (经 Onshape 解析提取)
+
+  坐标约定: ROS Z-up. base_link 原点 = 大yaw回转轴心, 高度取 CAD 原点面(轮心上方20mm),
+  地面在 z=-0.096. 前向 +x = CAD +X.
+
+  关键实测参数:
+    全向轮: 直径152mm 宽39mm, 4轮X布局, 安装半径245mm(轮心距轴心), 轮轴沿径向
+    大yaw: DM4310+同步带, 滑环供电 -> continuous
+    小yaw: GM6020 直驱, 轴前置58.5mm
+    pitch: DM4310+连杆, 铰点在小yaw原点上方169mm, 限位为估计值(待实测校准)
+    mid360: 斜装60°(CAD设计值), 挂大yaw回转层
+  质量来源分三档, 各 link 注释里标明:
+    a) CAD 精确值 —— SW 质量属性(已验证是关于质心的), 结构件材料设置正确(板材ρ=2000玻纤)
+    b) 实物规格修正 —— CAD 中密度=1000kg/m³ 者为 SW 未赋材料, 按外购件规格补足:
+       M3508 60.7g->365g, GM6020 468g->960g, Mid360 52.6g->265g
+    c) 估计值 —— pitch 体(CAD无独立子装配), 取 1.2kg; 物理上界 1.65kg
+  注: CAD 根装配 35.44kg 含"干涉/范围"幻影件(非实体, 单件可达数百kg), 不可用作整机质量.
+      实际结构 = 底盘13.56 + 云台12.03 = 25.59kg, 与本模型总质量一致.
+  以上均为辨识初值, 实车称重与云台参数辨识后应替换.
+-->
+<sdf version="1.7">
+  <model name="sentry">
+    <self_collide>false</self_collide>
+
+    <!-- ================= 底盘 ================= -->
+    <link name="base_link">
+      <inertial>
+        <pose>-0.0014 0.0103 0.0605 0 0 0</pose>
+        <mass>9.404</mass>
+        <inertia>
+          <ixx>0.4551</ixx>
+          <iyy>0.4342</iyy>
+          <izz>0.3694</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="base_visual">
+        <pose>-0.0625 -0.0625 0 1.5708 0 0</pose>
+        <geometry>
+          <mesh><uri>model://sentry/meshes/base_link.glb</uri></mesh>
+        </geometry>
+      </visual>
+      <collision name="base_collision">
+        <pose>0 0 0.10 0 0 0</pose>
+        <geometry>
+          <cylinder><radius>0.30</radius><length>0.26</length></cylinder>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- ================= 全向轮 x4 (X布局, 轮轴沿径向) ================= -->
+    <!-- 轮系: z=轮轴(朝外径向). fdir1=(0,0,1)沿轮轴 => mu(轴向,滚子自由)低 / mu2(切向,驱动)高.
+         fdir1 与轮自转轴重合, 旋转下方向不变 — 全向轮的摩擦hack因此比麦轮干净. -->
+
+    <link name="wheel_fl_link">
+      <pose>0.1732 0.1732 -0.020 0 1.5708 0.7854</pose>
+      <!-- 含 M3508 按实物规格补足 (CAD 60.7g -> 365g), 电机近轴故惯量增幅小 -->
+      <inertial>
+        <mass>1.3433</mass>
+        <inertia><ixx>0.0016</ixx><iyy>0.0016</iyy><izz>0.0032</izz></inertia>
+      </inertial>
+      <visual name="v"><geometry><mesh><uri>model://sentry/meshes/omni_wheel.glb</uri></mesh></geometry></visual>
+      <collision name="c">
+        <geometry><sphere><radius>0.076</radius></sphere></geometry>
+        <surface><friction><ode>
+          <mu>0.05</mu><mu2>2.0</mu2><fdir1>0 0 1</fdir1>
+        </ode></friction></surface>
+      </collision>
+    </link>
+    <joint name="wheel_fl_joint" type="revolute">
+      <parent>base_link</parent><child>wheel_fl_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.05</damping></dynamics>
+      </axis>
+    </joint>
+
+    <link name="wheel_rl_link">
+      <pose>-0.1732 0.1732 -0.020 0 1.5708 2.3562</pose>
+      <!-- 含 M3508 按实物规格补足 (CAD 60.7g -> 365g), 电机近轴故惯量增幅小 -->
+      <inertial>
+        <mass>1.3433</mass>
+        <inertia><ixx>0.0016</ixx><iyy>0.0016</iyy><izz>0.0032</izz></inertia>
+      </inertial>
+      <visual name="v"><geometry><mesh><uri>model://sentry/meshes/omni_wheel.glb</uri></mesh></geometry></visual>
+      <collision name="c">
+        <geometry><sphere><radius>0.076</radius></sphere></geometry>
+        <surface><friction><ode>
+          <mu>0.05</mu><mu2>2.0</mu2><fdir1>0 0 1</fdir1>
+        </ode></friction></surface>
+      </collision>
+    </link>
+    <joint name="wheel_rl_joint" type="revolute">
+      <parent>base_link</parent><child>wheel_rl_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.05</damping></dynamics>
+      </axis>
+    </joint>
+
+    <link name="wheel_rr_link">
+      <pose>-0.1732 -0.1732 -0.020 0 1.5708 -2.3562</pose>
+      <!-- 含 M3508 按实物规格补足 (CAD 60.7g -> 365g), 电机近轴故惯量增幅小 -->
+      <inertial>
+        <mass>1.3433</mass>
+        <inertia><ixx>0.0016</ixx><iyy>0.0016</iyy><izz>0.0032</izz></inertia>
+      </inertial>
+      <visual name="v"><geometry><mesh><uri>model://sentry/meshes/omni_wheel.glb</uri></mesh></geometry></visual>
+      <collision name="c">
+        <geometry><sphere><radius>0.076</radius></sphere></geometry>
+        <surface><friction><ode>
+          <mu>0.05</mu><mu2>2.0</mu2><fdir1>0 0 1</fdir1>
+        </ode></friction></surface>
+      </collision>
+    </link>
+    <joint name="wheel_rr_joint" type="revolute">
+      <parent>base_link</parent><child>wheel_rr_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.05</damping></dynamics>
+      </axis>
+    </joint>
+
+    <link name="wheel_fr_link">
+      <pose>0.1732 -0.1732 -0.020 0 1.5708 -0.7854</pose>
+      <!-- 含 M3508 按实物规格补足 (CAD 60.7g -> 365g), 电机近轴故惯量增幅小 -->
+      <inertial>
+        <mass>1.3433</mass>
+        <inertia><ixx>0.0016</ixx><iyy>0.0016</iyy><izz>0.0032</izz></inertia>
+      </inertial>
+      <visual name="v"><geometry><mesh><uri>model://sentry/meshes/omni_wheel.glb</uri></mesh></geometry></visual>
+      <collision name="c">
+        <geometry><sphere><radius>0.076</radius></sphere></geometry>
+        <surface><friction><ode>
+          <mu>0.05</mu><mu2>2.0</mu2><fdir1>0 0 1</fdir1>
+        </ode></friction></surface>
+      </collision>
+    </link>
+    <joint name="wheel_fr_joint" type="revolute">
+      <parent>base_link</parent><child>wheel_fr_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.05</damping></dynamics>
+      </axis>
+    </joint>
+
+    <!-- ================= 大yaw回转层 ================= -->
+    <link name="gimbal_link">
+      <pose relative_to="big_yaw_joint">0 0 0 0 0 0</pose>
+      <!-- = 云台10.31(CAD) 减去 小yaw总成, 再减去 CAD Mid360(它是独立 link, 否则重复计入) -->
+      <inertial>
+        <pose>-0.0077 -0.0266 0.1614 0 0 0</pose>
+        <mass>9.0254</mass>
+        <inertia>
+          <ixx>0.20498</ixx><iyy>0.17471</iyy><izz>0.17204</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="gimbal_visual">
+        <pose>0 0 0 1.5708 0 0</pose>
+        <geometry>
+          <mesh><uri>model://sentry/meshes/gimbal_link.glb</uri></mesh>
+        </geometry>
+      </visual>
+      <collision name="gimbal_collision">
+        <pose>0 0 0.20 0 0 0</pose>
+        <geometry>
+          <cylinder><radius>0.26</radius><length>0.34</length></cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="big_yaw_joint" type="revolute">
+      <pose relative_to="base_link">0 0 0.0845 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>gimbal_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit><lower>-1e16</lower><upper>1e16</upper></limit>
+        <dynamics><damping>0.3</damping></dynamics>
+      </axis>
+    </joint>
+
+    <!-- mid360: 挂回转层, 斜装60° (CAD设计值), 位姿由总装提取.
+         注意: 传感器原点取 Livox CAD 装配原点, 与光学中心可能有 <50mm 偏移, 待实测校准.
+         视觉模型已包含在 gimbal_link.glb 内, 此 link 不重复放 visual. -->
+    <link name="livox_lidar">
+      <pose relative_to="gimbal_link">-0.1963 -0.0880 0.2516 1.0472 0 -1.3521</pose>
+      <!-- 实物规格 265 g (CAD 模型仅 52.6 g, 未赋材料) -->
+      <inertial>
+        <mass>0.265</mass>
+        <inertia><ixx>0.00018</ixx><iyy>0.00018</iyy><izz>0.00018</izz></inertia>
+      </inertial>
+
+      <!-- LIDAR SENSOR (RGL) -->
+      <sensor name="RGLLidar" type="custom">
+        <plugin filename="RGLServerPluginInstance" name="rgl::RGLServerPluginInstance">
+          <range>
+            <min>0.05</min>
+            <max>245</max>
+          </range>
+          <update_rate>10</update_rate>
+          <update_on_paused_sim>false</update_on_paused_sim>
+          <topic>livox/lidar</topic>
+          <frame>livox_lidar</frame>
+          <pattern_preset_path>__RM_SIM_26_PATTERN_PRESET_PATH__</pattern_preset_path>
+        </plugin>
+      </sensor>
+
+      <!-- IMU SENSOR (Livox 内置) -->
+      <sensor name="livox_lidar_imu" type="imu">
+        <update_rate>100</update_rate>
+        <always_on>true</always_on>
+        <topic>/livox/imu</topic>
+        <frame>livox_lidar</frame>
+        <imu>
+          <angular_velocity>
+            <x><noise type="gaussian"><mean>0.0</mean><stddev>2e-4</stddev></noise></x>
+            <y><noise type="gaussian"><mean>0.0</mean><stddev>2e-4</stddev></noise></y>
+            <z><noise type="gaussian"><mean>0.0</mean><stddev>2e-4</stddev></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type="gaussian"><mean>0.0</mean><stddev>1.7e-2</stddev></noise></x>
+            <y><noise type="gaussian"><mean>0.0</mean><stddev>1.7e-2</stddev></noise></y>
+            <z><noise type="gaussian"><mean>0.0</mean><stddev>1.7e-2</stddev></noise></z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </link>
+    <joint name="lidar_joint" type="fixed">
+      <parent>gimbal_link</parent>
+      <child>livox_lidar</child>
+    </joint>
+
+    <!-- ================= 小yaw ================= -->
+    <link name="small_yaw_link">
+      <pose relative_to="small_yaw_joint">0 0 0 0 0 0</pose>
+      <!-- = 小yaw总成(CAD 2.954kg) 减去 pitch体估计, 再按实物规格补足 GM6020(+0.492) -->
+      <inertial>
+        <pose>-0.0021 0.0230 0.1237 0 0 0</pose>
+        <mass>2.246</mass>
+        <inertia>
+          <ixx>0.01039</ixx><iyy>0.00773</iyy><izz>0.00471</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="small_yaw_visual">
+        <pose>0 0 0 1.5708 0 0</pose>
+        <geometry>
+          <mesh><uri>model://sentry/meshes/small_yaw_link.glb</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name="small_yaw_joint" type="revolute">
+      <pose relative_to="gimbal_link">0 0.0585 0.1210 0 0 0</pose>
+      <parent>gimbal_link</parent>
+      <child>small_yaw_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <!-- 限位为估计值(线缆约束), 待实车确认 -->
+        <limit><lower>-1.57</lower><upper>1.57</upper></limit>
+        <dynamics><damping>0.05</damping></dynamics>
+      </axis>
+    </joint>
+
+    <!-- ================= pitch (发射体: 枪管+摩擦轮+相机+IMU) ================= -->
+    <link name="pitch_link">
+      <pose relative_to="pitch_joint">0 0 0 0 0 0</pose>
+      <!-- CAD无独立pitch体子装配: 质量取 1.2kg (物理上界1.65kg — 再大则小yaw静体
+           出现负惯量; 凸包体积法估1.7kg偏高). 惯量由网格薄壳近似算得, 辨识后替换 -->
+      <inertial>
+        <pose>-0.0011 0.0643 0.0326 0 0 0</pose>
+        <mass>1.2</mass>
+        <inertia>
+          <ixx>0.00867</ixx><iyy>0.00237</iyy><izz>0.00767</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="pitch_visual">
+        <pose>0 0 0 1.5708 0 0</pose>
+        <geometry>
+          <mesh><uri>model://sentry/meshes/pitch_link.glb</uri></mesh>
+        </geometry>
+      </visual>
+
+      <!-- 自瞄 IMU (达妙 DM-IMU-L1, 装在pitch体上) -->
+      <sensor name="gimbal_imu" type="imu">
+        <pose>-0.0017 0.0055 0.0306 3.1416 0 1.5708</pose>
+        <update_rate>200</update_rate>
+        <always_on>true</always_on>
+        <topic>/gimbal/imu</topic>
+        <frame>gimbal_imu</frame>
+      </sensor>
+    </link>
+    <joint name="pitch_joint" type="revolute">
+      <pose relative_to="small_yaw_link">0 0 0.169 0 0 0</pose>
+      <parent>small_yaw_link</parent>
+      <child>pitch_link</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <!-- 限位为估计值, 待实车确认 -->
+        <limit><lower>-0.35</lower><upper>0.55</upper></limit>
+        <dynamics><damping>0.02</damping></dynamics>
+      </axis>
+    </joint>
+
+    <!-- ================= 控制插件 ================= -->
+    <!-- 底盘: 4轮独立速度控制, 逆运动学在 ROS 节点 omni_drive.py 中 (订阅 /cmd_vel) -->
+    <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
+      <joint_name>wheel_fl_joint</joint_name>
+      <topic>/wheel_fl/cmd_vel</topic>
+    </plugin>
+    <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
+      <joint_name>wheel_rl_joint</joint_name>
+      <topic>/wheel_rl/cmd_vel</topic>
+    </plugin>
+    <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
+      <joint_name>wheel_rr_joint</joint_name>
+      <topic>/wheel_rr/cmd_vel</topic>
+    </plugin>
+    <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
+      <joint_name>wheel_fr_joint</joint_name>
+      <topic>/wheel_fr/cmd_vel</topic>
+    </plugin>
+
+    <!-- 云台三轴位置控制 (增益为初值, 云台参数辨识后校准) -->
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>big_yaw_joint</joint_name>
+      <topic>/gimbal/big_yaw/cmd_pos</topic>
+      <p_gain>40</p_gain>
+      <i_gain>0.5</i_gain>
+      <d_gain>4</d_gain>
+    </plugin>
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>small_yaw_joint</joint_name>
+      <topic>/gimbal/small_yaw/cmd_pos</topic>
+      <p_gain>8</p_gain>
+      <i_gain>0.1</i_gain>
+      <d_gain>0.5</d_gain>
+    </plugin>
+    <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+      <joint_name>pitch_joint</joint_name>
+      <topic>/gimbal/pitch/cmd_pos</topic>
+      <p_gain>6</p_gain>
+      <i_gain>0.1</i_gain>
+      <d_gain>0.4</d_gain>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>joint_states</topic>
+      <joint_name>wheel_fl_joint</joint_name>
+      <joint_name>wheel_rl_joint</joint_name>
+      <joint_name>wheel_rr_joint</joint_name>
+      <joint_name>wheel_fr_joint</joint_name>
+      <joint_name>big_yaw_joint</joint_name>
+      <joint_name>small_yaw_joint</joint_name>
+      <joint_name>pitch_joint</joint_name>
+    </plugin>
+
+    <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
+      <publish_link_pose>true</publish_link_pose>
+      <publish_collision_pose>false</publish_collision_pose>
+      <publish_visual_pose>false</publish_visual_pose>
+      <publish_nested_model_pose>true</publish_nested_model_pose>
+    </plugin>
+  </model>
+</sdf>

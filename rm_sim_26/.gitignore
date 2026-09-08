@@ -1,0 +1,9 @@
+build/
+install/
+log/
+.vscode/
+.claude/settings.local.json
+mujoco/.venv/
+mujoco/uv.lock
+mujoco/**/__pycache__/
+mujoco/tools/_magwork/

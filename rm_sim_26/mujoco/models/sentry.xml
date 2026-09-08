@@ -1,0 +1,1734 @@
+<?xml version="1.0" ?>
+<mujoco model="sentry">
+  <compiler angle="radian" autolimits="true" meshdir="assets" texturedir="assets"/>
+  <option timestep="0.001" gravity="0 0 -9.81" density="1.204" viscosity="1.8e-5" integrator="implicitfast" solver="Newton" iterations="50" tolerance="1e-10" impratio="10" cone="elliptic" jacobian="sparse"/>
+  <size memory="64M"/>
+  <visual>
+    <headlight ambient="0.45 0.45 0.45" diffuse="0.55 0.55 0.55" specular="0.2 0.2 0.2"/>
+    <rgba haze="0.87 0.90 0.94 1"/>
+    <quality shadowsize="2048" offsamples="4"/>
+    <map znear="0.05" zfar="30"/>
+    <global offwidth="1920" offheight="1080"/>
+  </visual>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.62 0.68 0.76" rgb2="0.86 0.89 0.93" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.30 0.32 0.35" rgb2="0.36 0.38 0.41" width="512" height="512"/>
+    <material name="ground" texture="grid" texrepeat="24 24" texuniform="true" reflectance="0"/>
+    <material name="fiberglass" rgba="0.021 0.023 0.025 1" specular="0.15" shininess="0.25" reflectance="0.02"/>
+    <material name="carbon" rgba="0.013 0.014 0.016 1" specular="0.3" shininess="0.45" reflectance="0.05"/>
+    <material name="printed" rgba="0.03 0.031 0.034 1" specular="0.08" shininess="0.12" reflectance="0.0"/>
+    <material name="aluminium" rgba="0.34 0.353 0.372 1" specular="0.85" shininess="0.75" reflectance="0.35"/>
+    <material name="steel" rgba="0.248 0.258 0.274 1" specular="0.9" shininess="0.85" reflectance="0.45"/>
+    <material name="brass" rgba="0.272 0.146 0.052 1" specular="0.85" shininess="0.7" reflectance="0.3"/>
+    <material name="roller" rgba="0.75 0.75 0.715 1" specular="0.2" shininess="0.25" reflectance="0.02"/>
+    <material name="camera" rgba="0.34 0.353 0.372 1" specular="0.75" shininess="0.7" reflectance="0.3"/>
+    <material name="referee" rgba="0.61 0.625 0.65 1" specular="0.25" shininess="0.3" reflectance="0.05"/>
+    <material name="lightbar" rgba="0.7 0.715 0.75 1" specular="0.3" shininess="0.4" reflectance="0.1"/>
+    <material name="lidar" rgba="0.448 0.472 0.514 1" specular="0.6" shininess="0.55" reflectance="0.2"/>
+    <material name="acrylic" rgba="0.71 0.78 0.82 0.22" specular="0.95" shininess="0.9" reflectance="0.5"/>
+    <material name="pcb" rgba="0.01 0.062 0.017 1" specular="0.2" shininess="0.35" reflectance="0.05"/>
+    <material name="fluor" rgba="0.48 0.76 0.115 1" specular="0.3" shininess="0.45" reflectance="0.1"/>
+    <material name="accent" rgba="0.18 0.13 0.01 1" specular="0.55" shininess="0.6" reflectance="0.15"/>
+    <material name="darkbox" rgba="0.07 0.074 0.079 1" specular="0.2" shininess="0.3" reflectance="0.03"/>
+    <material name="misc" rgba="0.024 0.026 0.029 1" specular="0.15" shininess="0.25" reflectance="0.02"/>
+    <material name="tracer" rgba="0.35 1.0 0.15 1" emission="0.85" specular="0.4" shininess="0.6"/>
+    <mesh name="base_link__accent" file="base_link__accent.obj"/>
+    <mesh name="base_link__aluminium" file="base_link__aluminium.obj"/>
+    <mesh name="base_link__darkbox" file="base_link__darkbox.obj"/>
+    <mesh name="base_link__fiberglass" file="base_link__fiberglass.obj"/>
+    <mesh name="base_link__lightbar" file="base_link__lightbar.obj"/>
+    <mesh name="base_link__misc" file="base_link__misc.obj"/>
+    <mesh name="base_link__printed" file="base_link__printed.obj"/>
+    <mesh name="base_link__referee" file="base_link__referee.obj"/>
+    <mesh name="base_link__steel" file="base_link__steel.obj"/>
+    <mesh name="gimbal_link__accent" file="gimbal_link__accent.obj"/>
+    <mesh name="gimbal_link__acrylic" file="gimbal_link__acrylic.obj"/>
+    <mesh name="gimbal_link__aluminium" file="gimbal_link__aluminium.obj"/>
+    <mesh name="gimbal_link__camera" file="gimbal_link__camera.obj"/>
+    <mesh name="gimbal_link__fiberglass" file="gimbal_link__fiberglass.obj"/>
+    <mesh name="gimbal_link__lidar" file="gimbal_link__lidar.obj"/>
+    <mesh name="gimbal_link__misc" file="gimbal_link__misc.obj"/>
+    <mesh name="gimbal_link__pcb" file="gimbal_link__pcb.obj"/>
+    <mesh name="gimbal_link__printed" file="gimbal_link__printed.obj"/>
+    <mesh name="gimbal_link__referee" file="gimbal_link__referee.obj"/>
+    <mesh name="gimbal_link__steel" file="gimbal_link__steel.obj"/>
+    <mesh name="omni_wheel__fiberglass" file="omni_wheel__fiberglass.obj"/>
+    <mesh name="omni_wheel__printed" file="omni_wheel__printed.obj"/>
+    <mesh name="omni_wheel__roller" file="omni_wheel__roller.obj"/>
+    <mesh name="omni_wheel__steel" file="omni_wheel__steel.obj"/>
+    <mesh name="pitch_link__accent" file="pitch_link__accent.obj"/>
+    <mesh name="pitch_link__acrylic" file="pitch_link__acrylic.obj"/>
+    <mesh name="pitch_link__aluminium" file="pitch_link__aluminium.obj"/>
+    <mesh name="pitch_link__camera" file="pitch_link__camera.obj"/>
+    <mesh name="pitch_link__fiberglass" file="pitch_link__fiberglass.obj"/>
+    <mesh name="pitch_link__misc" file="pitch_link__misc.obj"/>
+    <mesh name="pitch_link__printed" file="pitch_link__printed.obj"/>
+    <mesh name="pitch_link__referee" file="pitch_link__referee.obj"/>
+    <mesh name="pitch_link__steel" file="pitch_link__steel.obj"/>
+    <mesh name="small_yaw_link__aluminium" file="small_yaw_link__aluminium.obj"/>
+    <mesh name="small_yaw_link__fiberglass" file="small_yaw_link__fiberglass.obj"/>
+    <mesh name="small_yaw_link__misc" file="small_yaw_link__misc.obj"/>
+    <mesh name="small_yaw_link__printed" file="small_yaw_link__printed.obj"/>
+    <mesh name="small_yaw_link__steel" file="small_yaw_link__steel.obj"/>
+    <mesh name="magcol0" file="magcol0.obj"/>
+    <mesh name="magcol1" file="magcol1.obj"/>
+    <mesh name="magcol2" file="magcol2.obj"/>
+    <mesh name="magcol3" file="magcol3.obj"/>
+    <mesh name="magcol4" file="magcol4.obj"/>
+    <mesh name="magcol5" file="magcol5.obj"/>
+    <mesh name="magcol6" file="magcol6.obj"/>
+    <mesh name="magcol7" file="magcol7.obj"/>
+    <mesh name="magcol8" file="magcol8.obj"/>
+    <mesh name="magcol9" file="magcol9.obj"/>
+    <mesh name="magcol10" file="magcol10.obj"/>
+    <mesh name="magcol11" file="magcol11.obj"/>
+    <mesh name="magcol12" file="magcol12.obj"/>
+    <mesh name="magcol13" file="magcol13.obj"/>
+    <mesh name="magcol14" file="magcol14.obj"/>
+    <mesh name="magcol15" file="magcol15.obj"/>
+    <mesh name="magcol16" file="magcol16.obj"/>
+    <mesh name="magcol17" file="magcol17.obj"/>
+    <mesh name="magcol18" file="magcol18.obj"/>
+    <mesh name="magcol19" file="magcol19.obj"/>
+    <mesh name="magcol20" file="magcol20.obj"/>
+    <mesh name="magcol21" file="magcol21.obj"/>
+    <mesh name="magcol22" file="magcol22.obj"/>
+    <mesh name="magcol23" file="magcol23.obj"/>
+    <mesh name="magcol24" file="magcol24.obj"/>
+    <mesh name="magcol25" file="magcol25.obj"/>
+    <mesh name="magcol26" file="magcol26.obj"/>
+    <mesh name="magcol27" file="magcol27.obj"/>
+    <mesh name="magcol28" file="magcol28.obj"/>
+    <mesh name="magcol29" file="magcol29.obj"/>
+    <mesh name="magcol30" file="magcol30.obj"/>
+    <mesh name="magcol31" file="magcol31.obj"/>
+    <mesh name="magcol32" file="magcol32.obj"/>
+    <mesh name="magcol33" file="magcol33.obj"/>
+    <mesh name="magcol34" file="magcol34.obj"/>
+    <mesh name="magcol35" file="magcol35.obj"/>
+    <mesh name="magcol36" file="magcol36.obj"/>
+    <mesh name="magcol37" file="magcol37.obj"/>
+    <mesh name="magcol38" file="magcol38.obj"/>
+    <mesh name="magcol39" file="magcol39.obj"/>
+    <mesh name="magcol40" file="magcol40.obj"/>
+    <mesh name="magcol41" file="magcol41.obj"/>
+    <mesh name="magcol42" file="magcol42.obj"/>
+    <mesh name="magcol43" file="magcol43.obj"/>
+    <mesh name="magcol44" file="magcol44.obj"/>
+    <mesh name="magcol45" file="magcol45.obj"/>
+    <mesh name="magcol46" file="magcol46.obj"/>
+    <mesh name="magcol47" file="magcol47.obj"/>
+    <mesh name="magcol48" file="magcol48.obj"/>
+    <mesh name="magcol49" file="magcol49.obj"/>
+    <mesh name="magcol50" file="magcol50.obj"/>
+    <mesh name="magcol51" file="magcol51.obj"/>
+    <mesh name="magcol52" file="magcol52.obj"/>
+    <mesh name="magcol53" file="magcol53.obj"/>
+    <mesh name="magcol54" file="magcol54.obj"/>
+    <mesh name="magcol55" file="magcol55.obj"/>
+    <mesh name="magcol56" file="magcol56.obj"/>
+    <mesh name="magcol57" file="magcol57.obj"/>
+    <mesh name="magcol58" file="magcol58.obj"/>
+    <mesh name="magcol59" file="magcol59.obj"/>
+    <mesh name="magcol60" file="magcol60.obj"/>
+    <mesh name="magcol61" file="magcol61.obj"/>
+    <mesh name="magcol62" file="magcol62.obj"/>
+    <mesh name="magcol63" file="magcol63.obj"/>
+    <mesh name="magcol64" file="magcol64.obj"/>
+    <mesh name="magcol65" file="magcol65.obj"/>
+    <mesh name="magcol66" file="magcol66.obj"/>
+    <mesh name="magcol67" file="magcol67.obj"/>
+    <mesh name="magcol68" file="magcol68.obj"/>
+    <mesh name="magcol69" file="magcol69.obj"/>
+    <mesh name="magcol70" file="magcol70.obj"/>
+    <mesh name="magcol71" file="magcol71.obj"/>
+    <mesh name="magcol72" file="magcol72.obj"/>
+    <mesh name="magcol73" file="magcol73.obj"/>
+    <mesh name="magcol74" file="magcol74.obj"/>
+    <mesh name="magcol75" file="magcol75.obj"/>
+    <mesh name="magcol76" file="magcol76.obj"/>
+    <mesh name="magcol77" file="magcol77.obj"/>
+    <mesh name="magcol78" file="magcol78.obj"/>
+    <mesh name="magcol79" file="magcol79.obj"/>
+    <mesh name="magcol80" file="magcol80.obj"/>
+    <mesh name="magcol81" file="magcol81.obj"/>
+    <mesh name="magcol82" file="magcol82.obj"/>
+    <mesh name="magcol83" file="magcol83.obj"/>
+    <mesh name="magcol84" file="magcol84.obj"/>
+    <mesh name="magcol85" file="magcol85.obj"/>
+    <mesh name="magcol86" file="magcol86.obj"/>
+    <mesh name="magcol87" file="magcol87.obj"/>
+    <mesh name="magcol88" file="magcol88.obj"/>
+    <mesh name="magcol89" file="magcol89.obj"/>
+    <mesh name="magcol90" file="magcol90.obj"/>
+    <mesh name="magcol91" file="magcol91.obj"/>
+    <mesh name="magcol92" file="magcol92.obj"/>
+    <mesh name="magcol93" file="magcol93.obj"/>
+    <mesh name="magcol94" file="magcol94.obj"/>
+    <mesh name="magcol95" file="magcol95.obj"/>
+    <mesh name="magcol96" file="magcol96.obj"/>
+    <mesh name="magcol97" file="magcol97.obj"/>
+    <mesh name="magcol98" file="magcol98.obj"/>
+    <mesh name="magcol99" file="magcol99.obj"/>
+    <mesh name="magcol100" file="magcol100.obj"/>
+    <mesh name="magcol101" file="magcol101.obj"/>
+    <mesh name="magcol102" file="magcol102.obj"/>
+    <mesh name="magcol103" file="magcol103.obj"/>
+    <mesh name="magcol104" file="magcol104.obj"/>
+    <mesh name="magcol105" file="magcol105.obj"/>
+    <mesh name="magcol106" file="magcol106.obj"/>
+    <mesh name="magcol107" file="magcol107.obj"/>
+    <mesh name="magcol108" file="magcol108.obj"/>
+    <mesh name="magcol109" file="magcol109.obj"/>
+    <mesh name="magcol110" file="magcol110.obj"/>
+    <mesh name="magcol111" file="magcol111.obj"/>
+    <mesh name="magcol112" file="magcol112.obj"/>
+    <mesh name="magcol113" file="magcol113.obj"/>
+    <mesh name="magcol114" file="magcol114.obj"/>
+    <mesh name="magcol115" file="magcol115.obj"/>
+    <mesh name="magcol116" file="magcol116.obj"/>
+    <mesh name="magcol117" file="magcol117.obj"/>
+    <mesh name="magcol118" file="magcol118.obj"/>
+    <mesh name="magcol119" file="magcol119.obj"/>
+    <mesh name="magcol120" file="magcol120.obj"/>
+    <mesh name="magcol121" file="magcol121.obj"/>
+    <mesh name="magcol122" file="magcol122.obj"/>
+    <mesh name="magcol123" file="magcol123.obj"/>
+    <mesh name="magcol124" file="magcol124.obj"/>
+    <mesh name="magcol125" file="magcol125.obj"/>
+    <mesh name="magcol126" file="magcol126.obj"/>
+    <mesh name="magcol127" file="magcol127.obj"/>
+    <mesh name="magcol128" file="magcol128.obj"/>
+    <mesh name="magcol129" file="magcol129.obj"/>
+  </asset>
+  <default>
+    <default class="sentry">
+      <default class="visual">
+        <geom group="1" contype="0" conaffinity="0" density="0"/>
+      </default>
+      <default class="collision">
+        <geom group="3" rgba="0.9 0.4 0.2 0.25" condim="4" friction="1.0 0.02 0.001"/>
+      </default>
+      <default class="gimbal">
+        <joint armature="0.004" damping="0.0" frictionloss="0.0"/>
+      </default>
+      <default class="wheel">
+        <joint armature="0.002" damping="0.0" frictionloss="0.0"/>
+        <geom condim="4" friction="1.4 0.005 0.0002" priority="1"/>
+      </default>
+    </default>
+  </default>
+  <worldbody>
+    <geom name="floor" type="plane" size="12 12 0.05" material="ground" condim="4" friction="1.0 0.02 0.001"/>
+    <light pos="0 0 4.5" dir="0 0 -1" directional="true" diffuse="0.5 0.5 0.5"/>
+    <light pos="3 -3 3" dir="-0.6 0.6 -0.7" directional="true" diffuse="0.35 0.35 0.35"/>
+    <body name="base_link" pos="0 0 0.30" childclass="sentry">
+      <freejoint name="root"/>
+      <inertial pos="-0.0014 0.0103 0.0605" mass="9.404" diaginertia="0.4551 0.4342 0.3694"/>
+      <geom class="visual" type="mesh" mesh="base_link__accent" material="accent" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__aluminium" material="aluminium" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__darkbox" material="darkbox" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__fiberglass" material="fiberglass" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__lightbar" material="lightbar" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__misc" material="misc" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__printed" material="printed" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__referee" material="referee" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom class="visual" type="mesh" mesh="base_link__steel" material="steel" quat="0.707107 0.707107 0 0" pos="-0.0625 -0.0625 0"/>
+      <geom name="base_col" type="cylinder" size="0.30 0.13" pos="0 0 0.10" class="collision"/>
+      <body name="wheel_fl_link" pos="0.1732 0.1732 -0.02" quat="0.65328 -0.270599 0.653282 0.270598" childclass="wheel">
+        <inertial pos="0 0 0" mass="1.3433" diaginertia="0.0016 0.0016 0.0032"/>
+        <joint name="wheel_fl_joint" type="hinge" axis="0 0 1" damping="0.05"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__fiberglass" material="fiberglass"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__printed" material="printed"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__roller" material="roller"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__steel" material="steel"/>
+        <geom name="wheel_fl_link_col" type="sphere" size="0.076" class="collision"/>
+      </body>
+      <body name="wheel_rl_link" pos="-0.1732 0.1732 -0.02" quat="0.270596 -0.653283 0.270597 0.653281" childclass="wheel">
+        <inertial pos="0 0 0" mass="1.3433" diaginertia="0.0016 0.0016 0.0032"/>
+        <joint name="wheel_rl_joint" type="hinge" axis="0 0 1" damping="0.05"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__fiberglass" material="fiberglass"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__printed" material="printed"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__roller" material="roller"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__steel" material="steel"/>
+        <geom name="wheel_rl_link_col" type="sphere" size="0.076" class="collision"/>
+      </body>
+      <body name="wheel_rr_link" pos="-0.1732 -0.1732 -0.02" quat="0.270596 0.653283 0.270597 -0.653281" childclass="wheel">
+        <inertial pos="0 0 0" mass="1.3433" diaginertia="0.0016 0.0016 0.0032"/>
+        <joint name="wheel_rr_joint" type="hinge" axis="0 0 1" damping="0.05"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__fiberglass" material="fiberglass"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__printed" material="printed"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__roller" material="roller"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__steel" material="steel"/>
+        <geom name="wheel_rr_link_col" type="sphere" size="0.076" class="collision"/>
+      </body>
+      <body name="wheel_fr_link" pos="0.1732 -0.1732 -0.02" quat="0.65328 0.270599 0.653282 -0.270598" childclass="wheel">
+        <inertial pos="0 0 0" mass="1.3433" diaginertia="0.0016 0.0016 0.0032"/>
+        <joint name="wheel_fr_joint" type="hinge" axis="0 0 1" damping="0.05"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__fiberglass" material="fiberglass"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__printed" material="printed"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__roller" material="roller"/>
+        <geom class="visual" type="mesh" mesh="omni_wheel__steel" material="steel"/>
+        <geom name="wheel_fr_link_col" type="sphere" size="0.076" class="collision"/>
+      </body>
+      <body name="gimbal_link" pos="0 0 0.0845" quat="1 0 0 0" childclass="gimbal">
+        <inertial pos="-0.0077 -0.0266 0.1614" mass="9.0254" diaginertia="0.20498 0.17471 0.17204"/>
+        <joint name="big_yaw_joint" type="hinge" axis="0 0 1" damping="0.3"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__accent" material="accent" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__acrylic" material="acrylic" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__aluminium" material="aluminium" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__camera" material="camera" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__fiberglass" material="fiberglass" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__lidar" material="lidar" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__misc" material="misc" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__pcb" material="pcb" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__printed" material="printed" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__referee" material="referee" quat="0.707107 0.707107 0 0"/>
+        <geom class="visual" type="mesh" mesh="gimbal_link__steel" material="steel" quat="0.707107 0.707107 0 0"/>
+        <geom name="gimbal_col" type="cylinder" size="0.26 0.17" pos="0 0 0.20" class="collision"/>
+        <body name="hopper" pos="0 0 0">
+          <inertial pos="-0.0229 -0.0277 0.0563" mass="0.12" diaginertia="4e-4 4e-4 6e-4"/>
+          <geom name="magwall0" type="mesh" mesh="magcol0" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall1" type="mesh" mesh="magcol1" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall2" type="mesh" mesh="magcol2" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall3" type="mesh" mesh="magcol3" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall4" type="mesh" mesh="magcol4" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall5" type="mesh" mesh="magcol5" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall6" type="mesh" mesh="magcol6" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall7" type="mesh" mesh="magcol7" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall8" type="mesh" mesh="magcol8" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall9" type="mesh" mesh="magcol9" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall10" type="mesh" mesh="magcol10" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall11" type="mesh" mesh="magcol11" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall12" type="mesh" mesh="magcol12" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall13" type="mesh" mesh="magcol13" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall14" type="mesh" mesh="magcol14" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall15" type="mesh" mesh="magcol15" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall16" type="mesh" mesh="magcol16" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall17" type="mesh" mesh="magcol17" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall18" type="mesh" mesh="magcol18" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall19" type="mesh" mesh="magcol19" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall20" type="mesh" mesh="magcol20" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall21" type="mesh" mesh="magcol21" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall22" type="mesh" mesh="magcol22" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall23" type="mesh" mesh="magcol23" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall24" type="mesh" mesh="magcol24" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall25" type="mesh" mesh="magcol25" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall26" type="mesh" mesh="magcol26" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall27" type="mesh" mesh="magcol27" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall28" type="mesh" mesh="magcol28" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall29" type="mesh" mesh="magcol29" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall30" type="mesh" mesh="magcol30" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall31" type="mesh" mesh="magcol31" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall32" type="mesh" mesh="magcol32" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall33" type="mesh" mesh="magcol33" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall34" type="mesh" mesh="magcol34" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall35" type="mesh" mesh="magcol35" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall36" type="mesh" mesh="magcol36" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall37" type="mesh" mesh="magcol37" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall38" type="mesh" mesh="magcol38" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall39" type="mesh" mesh="magcol39" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall40" type="mesh" mesh="magcol40" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall41" type="mesh" mesh="magcol41" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall42" type="mesh" mesh="magcol42" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall43" type="mesh" mesh="magcol43" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall44" type="mesh" mesh="magcol44" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall45" type="mesh" mesh="magcol45" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall46" type="mesh" mesh="magcol46" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall47" type="mesh" mesh="magcol47" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall48" type="mesh" mesh="magcol48" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall49" type="mesh" mesh="magcol49" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall50" type="mesh" mesh="magcol50" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall51" type="mesh" mesh="magcol51" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall52" type="mesh" mesh="magcol52" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall53" type="mesh" mesh="magcol53" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall54" type="mesh" mesh="magcol54" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall55" type="mesh" mesh="magcol55" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall56" type="mesh" mesh="magcol56" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall57" type="mesh" mesh="magcol57" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall58" type="mesh" mesh="magcol58" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall59" type="mesh" mesh="magcol59" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall60" type="mesh" mesh="magcol60" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall61" type="mesh" mesh="magcol61" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall62" type="mesh" mesh="magcol62" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall63" type="mesh" mesh="magcol63" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall64" type="mesh" mesh="magcol64" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall65" type="mesh" mesh="magcol65" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall66" type="mesh" mesh="magcol66" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall67" type="mesh" mesh="magcol67" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall68" type="mesh" mesh="magcol68" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall69" type="mesh" mesh="magcol69" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall70" type="mesh" mesh="magcol70" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall71" type="mesh" mesh="magcol71" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall72" type="mesh" mesh="magcol72" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall73" type="mesh" mesh="magcol73" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall74" type="mesh" mesh="magcol74" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall75" type="mesh" mesh="magcol75" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall76" type="mesh" mesh="magcol76" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall77" type="mesh" mesh="magcol77" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall78" type="mesh" mesh="magcol78" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall79" type="mesh" mesh="magcol79" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall80" type="mesh" mesh="magcol80" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall81" type="mesh" mesh="magcol81" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall82" type="mesh" mesh="magcol82" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall83" type="mesh" mesh="magcol83" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall84" type="mesh" mesh="magcol84" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall85" type="mesh" mesh="magcol85" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall86" type="mesh" mesh="magcol86" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall87" type="mesh" mesh="magcol87" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall88" type="mesh" mesh="magcol88" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall89" type="mesh" mesh="magcol89" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall90" type="mesh" mesh="magcol90" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall91" type="mesh" mesh="magcol91" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall92" type="mesh" mesh="magcol92" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall93" type="mesh" mesh="magcol93" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall94" type="mesh" mesh="magcol94" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall95" type="mesh" mesh="magcol95" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall96" type="mesh" mesh="magcol96" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall97" type="mesh" mesh="magcol97" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall98" type="mesh" mesh="magcol98" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall99" type="mesh" mesh="magcol99" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall100" type="mesh" mesh="magcol100" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall101" type="mesh" mesh="magcol101" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall102" type="mesh" mesh="magcol102" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall103" type="mesh" mesh="magcol103" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall104" type="mesh" mesh="magcol104" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall105" type="mesh" mesh="magcol105" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall106" type="mesh" mesh="magcol106" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall107" type="mesh" mesh="magcol107" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall108" type="mesh" mesh="magcol108" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall109" type="mesh" mesh="magcol109" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall110" type="mesh" mesh="magcol110" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall111" type="mesh" mesh="magcol111" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall112" type="mesh" mesh="magcol112" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall113" type="mesh" mesh="magcol113" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall114" type="mesh" mesh="magcol114" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall115" type="mesh" mesh="magcol115" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall116" type="mesh" mesh="magcol116" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall117" type="mesh" mesh="magcol117" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall118" type="mesh" mesh="magcol118" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall119" type="mesh" mesh="magcol119" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall120" type="mesh" mesh="magcol120" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall121" type="mesh" mesh="magcol121" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall122" type="mesh" mesh="magcol122" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall123" type="mesh" mesh="magcol123" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall124" type="mesh" mesh="magcol124" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall125" type="mesh" mesh="magcol125" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall126" type="mesh" mesh="magcol126" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall127" type="mesh" mesh="magcol127" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall128" type="mesh" mesh="magcol128" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="magwall129" type="mesh" mesh="magcol129" material="printed" contype="4" conaffinity="4" group="3"/>
+        </body>
+        <body name="feeder" pos="-0.0229 -0.0277 0.0563">
+          <inertial pos="0 0 0" mass="0.045" diaginertia="3.1e-5 3.1e-5 6.1e-5"/>
+          <joint name="feeder_joint" type="hinge" axis="0 0 1" damping="1e-3" armature="2e-5"/>
+          <geom name="feeder_hub" type="cylinder" size="0.0520 0.005" material="aluminium" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle0" type="box" size="0.0156 0.0025 0.0110" pos="0.03536 0 0.011" quat="1 0 0 0" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle1" type="box" size="0.0156 0.0025 0.0110" pos="0.0250033 0.0250033 0.011" quat="0.92388 0 0 0.382683" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle2" type="box" size="0.0156 0.0025 0.0110" pos="2.16518e-18 0.03536 0.011" quat="0.707107 0 0 0.707107" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle3" type="box" size="0.0156 0.0025 0.0110" pos="-0.0250033 0.0250033 0.011" quat="0.382683 0 0 0.92388" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle4" type="box" size="0.0156 0.0025 0.0110" pos="-0.03536 4.33035e-18 0.011" quat="6.12323e-17 0 0 1" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle5" type="box" size="0.0156 0.0025 0.0110" pos="-0.0250033 -0.0250033 0.011" quat="-0.382683 -0 0 0.92388" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle6" type="box" size="0.0156 0.0025 0.0110" pos="-6.49553e-18 -0.03536 0.011" quat="-0.707107 -0 0 0.707107" material="printed" contype="4" conaffinity="4" group="3"/>
+          <geom name="feeder_paddle7" type="box" size="0.0156 0.0025 0.0110" pos="0.0250033 -0.0250033 0.011" quat="-0.92388 -0 0 0.382683" material="printed" contype="4" conaffinity="4" group="3"/>
+        </body>
+        <body name="livox_lidar" pos="-0.1963 -0.088 0.2516" quat="0.675543 0.390026 -0.312859 -0.541886">
+          <inertial pos="0 0 0" mass="0.265" diaginertia="0.00018 0.00018 0.00018"/>
+          <site name="livox_lidar" size="0.012" rgba="0.2 0.9 1.0 0.55"/>
+          <camera name="lidar_cam" pos="0 0 0" quat="1 0 0 0" fovy="90"/>
+        </body>
+        <body name="small_yaw_link" pos="0 0.0585 0.121" quat="1 0 0 0" childclass="gimbal">
+          <inertial pos="-0.0021 0.023 0.1237" mass="2.246" diaginertia="0.01039 0.00773 0.00471"/>
+          <joint name="small_yaw_joint" type="hinge" axis="0 0 1" damping="0.05" range="-1.57 1.57"/>
+          <geom class="visual" type="mesh" mesh="small_yaw_link__aluminium" material="aluminium" quat="0.707107 0.707107 0 0"/>
+          <geom class="visual" type="mesh" mesh="small_yaw_link__fiberglass" material="fiberglass" quat="0.707107 0.707107 0 0"/>
+          <geom class="visual" type="mesh" mesh="small_yaw_link__misc" material="misc" quat="0.707107 0.707107 0 0"/>
+          <geom class="visual" type="mesh" mesh="small_yaw_link__printed" material="printed" quat="0.707107 0.707107 0 0"/>
+          <geom class="visual" type="mesh" mesh="small_yaw_link__steel" material="steel" quat="0.707107 0.707107 0 0"/>
+          <body name="pitch_link" pos="0 0 0.169" quat="1 0 0 0" childclass="gimbal">
+            <inertial pos="-0.0011 0.0643 0.0326" mass="1.2" diaginertia="0.00867 0.00237 0.00767"/>
+            <joint name="pitch_joint" type="hinge" axis="1 0 0" damping="0.02" range="-0.35 0.55"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__accent" material="accent" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__acrylic" material="acrylic" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__aluminium" material="aluminium" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__camera" material="camera" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__fiberglass" material="fiberglass" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__misc" material="misc" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__printed" material="printed" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__referee" material="referee" quat="0.707107 0.707107 0 0"/>
+            <geom class="visual" type="mesh" mesh="pitch_link__steel" material="steel" quat="0.707107 0.707107 0 0"/>
+            <site name="muzzle" pos="-0.005497 0.089703 0.002588" quat="0.731983 -0.681072 0.0185107 0" size="0.006" rgba="1 0.35 0.1 0.9"/>
+            <site name="chrono" pos="-0.0036 0.1595 0.0076" size="0.009" rgba="0.2 1 0.4 0.35"/>
+            <body name="fric_left" pos="-0.0424962 0.0699903 0.00110135">
+              <inertial pos="0 0 0" mass="0.057" diaginertia="1.78e-05 1.78e-05 3.08e-05"/>
+              <joint name="fric_left_joint" type="hinge" axis="0 0 1" damping="2e-4" armature="4e-05"/>
+              <geom name="fric_left_geom" type="cylinder" size="0.028550000000000002 0.008" material="roller" mass="0.057" condim="4" priority="2" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" contype="2" conaffinity="2"/>
+            </body>
+            <body name="fric_right" pos="0.0303769 0.0680097 0.00110135">
+              <inertial pos="0 0 0" mass="0.057" diaginertia="1.78e-05 1.78e-05 3.08e-05"/>
+              <joint name="fric_right_joint" type="hinge" axis="0 0 1" damping="2e-4" armature="4e-05"/>
+              <geom name="fric_right_geom" type="cylinder" size="0.028550000000000002 0.008" material="roller" mass="0.057" condim="4" priority="2" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" contype="2" conaffinity="2"/>
+            </body>
+            <camera name="gimbal_cam" pos="-0.0017 0.1395 0.0531" quat="4.32978e-17 4.32978e-17 0.707107 0.707107" fovy="48"/>
+            <site name="gimbal_imu" pos="-0.0017 0.0055 0.0306" size="0.008" rgba="1 0.9 0.2 0.7"/>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="proj0" pos="0 0 -5.00">
+      <freejoint name="proj0_free"/>
+      <geom name="proj0_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj1" pos="0 0 -5.10">
+      <freejoint name="proj1_free"/>
+      <geom name="proj1_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj2" pos="0 0 -5.20">
+      <freejoint name="proj2_free"/>
+      <geom name="proj2_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj3" pos="0 0 -5.30">
+      <freejoint name="proj3_free"/>
+      <geom name="proj3_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj4" pos="0 0 -5.40">
+      <freejoint name="proj4_free"/>
+      <geom name="proj4_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj5" pos="0 0 -5.50">
+      <freejoint name="proj5_free"/>
+      <geom name="proj5_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj6" pos="0 0 -5.60">
+      <freejoint name="proj6_free"/>
+      <geom name="proj6_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj7" pos="0 0 -5.70">
+      <freejoint name="proj7_free"/>
+      <geom name="proj7_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj8" pos="0 0 -5.80">
+      <freejoint name="proj8_free"/>
+      <geom name="proj8_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj9" pos="0 0 -5.90">
+      <freejoint name="proj9_free"/>
+      <geom name="proj9_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj10" pos="0 0 -6.00">
+      <freejoint name="proj10_free"/>
+      <geom name="proj10_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj11" pos="0 0 -6.10">
+      <freejoint name="proj11_free"/>
+      <geom name="proj11_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj12" pos="0 0 -6.20">
+      <freejoint name="proj12_free"/>
+      <geom name="proj12_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj13" pos="0 0 -6.30">
+      <freejoint name="proj13_free"/>
+      <geom name="proj13_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj14" pos="0 0 -6.40">
+      <freejoint name="proj14_free"/>
+      <geom name="proj14_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj15" pos="0 0 -6.50">
+      <freejoint name="proj15_free"/>
+      <geom name="proj15_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj16" pos="0 0 -6.60">
+      <freejoint name="proj16_free"/>
+      <geom name="proj16_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj17" pos="0 0 -6.70">
+      <freejoint name="proj17_free"/>
+      <geom name="proj17_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj18" pos="0 0 -6.80">
+      <freejoint name="proj18_free"/>
+      <geom name="proj18_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj19" pos="0 0 -6.90">
+      <freejoint name="proj19_free"/>
+      <geom name="proj19_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj20" pos="0 0 -7.00">
+      <freejoint name="proj20_free"/>
+      <geom name="proj20_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj21" pos="0 0 -7.10">
+      <freejoint name="proj21_free"/>
+      <geom name="proj21_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj22" pos="0 0 -7.20">
+      <freejoint name="proj22_free"/>
+      <geom name="proj22_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj23" pos="0 0 -7.30">
+      <freejoint name="proj23_free"/>
+      <geom name="proj23_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj24" pos="0 0 -7.40">
+      <freejoint name="proj24_free"/>
+      <geom name="proj24_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj25" pos="0 0 -7.50">
+      <freejoint name="proj25_free"/>
+      <geom name="proj25_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj26" pos="0 0 -7.60">
+      <freejoint name="proj26_free"/>
+      <geom name="proj26_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj27" pos="0 0 -7.70">
+      <freejoint name="proj27_free"/>
+      <geom name="proj27_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj28" pos="0 0 -7.80">
+      <freejoint name="proj28_free"/>
+      <geom name="proj28_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj29" pos="0 0 -7.90">
+      <freejoint name="proj29_free"/>
+      <geom name="proj29_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj30" pos="0 0 -8.00">
+      <freejoint name="proj30_free"/>
+      <geom name="proj30_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj31" pos="0 0 -8.10">
+      <freejoint name="proj31_free"/>
+      <geom name="proj31_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj32" pos="0 0 -8.20">
+      <freejoint name="proj32_free"/>
+      <geom name="proj32_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj33" pos="0 0 -8.30">
+      <freejoint name="proj33_free"/>
+      <geom name="proj33_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj34" pos="0 0 -8.40">
+      <freejoint name="proj34_free"/>
+      <geom name="proj34_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj35" pos="0 0 -8.50">
+      <freejoint name="proj35_free"/>
+      <geom name="proj35_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj36" pos="0 0 -8.60">
+      <freejoint name="proj36_free"/>
+      <geom name="proj36_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj37" pos="0 0 -8.70">
+      <freejoint name="proj37_free"/>
+      <geom name="proj37_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj38" pos="0 0 -8.80">
+      <freejoint name="proj38_free"/>
+      <geom name="proj38_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj39" pos="0 0 -8.90">
+      <freejoint name="proj39_free"/>
+      <geom name="proj39_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj40" pos="0 0 -9.00">
+      <freejoint name="proj40_free"/>
+      <geom name="proj40_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj41" pos="0 0 -9.10">
+      <freejoint name="proj41_free"/>
+      <geom name="proj41_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj42" pos="0 0 -9.20">
+      <freejoint name="proj42_free"/>
+      <geom name="proj42_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj43" pos="0 0 -9.30">
+      <freejoint name="proj43_free"/>
+      <geom name="proj43_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj44" pos="0 0 -9.40">
+      <freejoint name="proj44_free"/>
+      <geom name="proj44_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj45" pos="0 0 -9.50">
+      <freejoint name="proj45_free"/>
+      <geom name="proj45_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj46" pos="0 0 -9.60">
+      <freejoint name="proj46_free"/>
+      <geom name="proj46_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj47" pos="0 0 -9.70">
+      <freejoint name="proj47_free"/>
+      <geom name="proj47_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj48" pos="0 0 -9.80">
+      <freejoint name="proj48_free"/>
+      <geom name="proj48_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj49" pos="0 0 -9.90">
+      <freejoint name="proj49_free"/>
+      <geom name="proj49_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj50" pos="0 0 -10.00">
+      <freejoint name="proj50_free"/>
+      <geom name="proj50_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj51" pos="0 0 -10.10">
+      <freejoint name="proj51_free"/>
+      <geom name="proj51_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj52" pos="0 0 -10.20">
+      <freejoint name="proj52_free"/>
+      <geom name="proj52_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj53" pos="0 0 -10.30">
+      <freejoint name="proj53_free"/>
+      <geom name="proj53_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj54" pos="0 0 -10.40">
+      <freejoint name="proj54_free"/>
+      <geom name="proj54_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj55" pos="0 0 -10.50">
+      <freejoint name="proj55_free"/>
+      <geom name="proj55_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj56" pos="0 0 -10.60">
+      <freejoint name="proj56_free"/>
+      <geom name="proj56_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj57" pos="0 0 -10.70">
+      <freejoint name="proj57_free"/>
+      <geom name="proj57_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj58" pos="0 0 -10.80">
+      <freejoint name="proj58_free"/>
+      <geom name="proj58_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj59" pos="0 0 -10.90">
+      <freejoint name="proj59_free"/>
+      <geom name="proj59_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj60" pos="0 0 -11.00">
+      <freejoint name="proj60_free"/>
+      <geom name="proj60_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj61" pos="0 0 -11.10">
+      <freejoint name="proj61_free"/>
+      <geom name="proj61_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj62" pos="0 0 -11.20">
+      <freejoint name="proj62_free"/>
+      <geom name="proj62_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj63" pos="0 0 -11.30">
+      <freejoint name="proj63_free"/>
+      <geom name="proj63_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj64" pos="0 0 -11.40">
+      <freejoint name="proj64_free"/>
+      <geom name="proj64_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj65" pos="0 0 -11.50">
+      <freejoint name="proj65_free"/>
+      <geom name="proj65_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj66" pos="0 0 -11.60">
+      <freejoint name="proj66_free"/>
+      <geom name="proj66_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj67" pos="0 0 -11.70">
+      <freejoint name="proj67_free"/>
+      <geom name="proj67_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj68" pos="0 0 -11.80">
+      <freejoint name="proj68_free"/>
+      <geom name="proj68_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj69" pos="0 0 -11.90">
+      <freejoint name="proj69_free"/>
+      <geom name="proj69_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj70" pos="0 0 -12.00">
+      <freejoint name="proj70_free"/>
+      <geom name="proj70_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj71" pos="0 0 -12.10">
+      <freejoint name="proj71_free"/>
+      <geom name="proj71_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj72" pos="0 0 -12.20">
+      <freejoint name="proj72_free"/>
+      <geom name="proj72_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj73" pos="0 0 -12.30">
+      <freejoint name="proj73_free"/>
+      <geom name="proj73_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj74" pos="0 0 -12.40">
+      <freejoint name="proj74_free"/>
+      <geom name="proj74_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj75" pos="0 0 -12.50">
+      <freejoint name="proj75_free"/>
+      <geom name="proj75_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj76" pos="0 0 -12.60">
+      <freejoint name="proj76_free"/>
+      <geom name="proj76_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj77" pos="0 0 -12.70">
+      <freejoint name="proj77_free"/>
+      <geom name="proj77_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj78" pos="0 0 -12.80">
+      <freejoint name="proj78_free"/>
+      <geom name="proj78_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj79" pos="0 0 -12.90">
+      <freejoint name="proj79_free"/>
+      <geom name="proj79_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj80" pos="0 0 -13.00">
+      <freejoint name="proj80_free"/>
+      <geom name="proj80_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj81" pos="0 0 -13.10">
+      <freejoint name="proj81_free"/>
+      <geom name="proj81_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj82" pos="0 0 -13.20">
+      <freejoint name="proj82_free"/>
+      <geom name="proj82_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj83" pos="0 0 -13.30">
+      <freejoint name="proj83_free"/>
+      <geom name="proj83_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj84" pos="0 0 -13.40">
+      <freejoint name="proj84_free"/>
+      <geom name="proj84_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj85" pos="0 0 -13.50">
+      <freejoint name="proj85_free"/>
+      <geom name="proj85_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj86" pos="0 0 -13.60">
+      <freejoint name="proj86_free"/>
+      <geom name="proj86_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj87" pos="0 0 -13.70">
+      <freejoint name="proj87_free"/>
+      <geom name="proj87_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj88" pos="0 0 -13.80">
+      <freejoint name="proj88_free"/>
+      <geom name="proj88_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <body name="proj89" pos="0 0 -13.90">
+      <freejoint name="proj89_free"/>
+      <geom name="proj89_geom" type="sphere" size="0.0085" mass="0.0032" material="tracer" condim="4" contype="7" conaffinity="7" friction="2.2 0.01 0.0005" solref="0.002 1" solimp="0.95 0.99 0.0005" fluidshape="ellipsoid" fluidcoef="0.47 0.25 1.5 1.0 1.0"/>
+    </body>
+    <camera name="track_chase" mode="trackcom" pos="-1.6 -1.6 1.15" xyaxes="0.707 -0.707 0 0.3 0.3 0.9"/>
+    <camera name="track_side" mode="trackcom" pos="0 -2.4 0.75" xyaxes="1 0 0 0 0.35 0.94"/>
+    <camera name="track_top" mode="trackcom" pos="0 -0.05 3.0" xyaxes="1 0 0 0 1 0"/>
+  </worldbody>
+  <custom>
+    <numeric name="mag_capacity" data="714"/>
+    <numeric name="mag_seed" data="0.00070 0.02160 0.08245 -0.01580 0.08837 0.12099 -0.03360 0.08900 0.12099 0.00210 0.08837 0.12099 -0.05060 0.08860 0.12099 0.02020 0.08837 0.12099 0.03800 0.08920 0.12099 0.11030 -0.02599 0.11499 0.11019 -0.04399 0.11499 0.11031 -0.00852 0.11499 0.11030 0.01001 0.11499 0.05580 0.08890 0.12099 0.11019 0.02800 0.11499 0.11020 0.04601 0.11499 -0.02206 -0.02789 0.13546 -0.03052 -0.01941 0.12340 -0.03051 -0.03641 0.12341 -0.01352 -0.01928 0.12337 -0.01351 -0.03627 0.12339 -0.03905 -0.02810 0.13553 -0.02206 -0.04503 0.13537 -0.02207 -0.00991 0.13468 -0.00509 -0.02709 0.13589 -0.03900 -0.01111 0.13557 -0.03906 -0.04510 0.13529 -0.00507 -0.04492 0.13534 -0.04751 -0.01940 0.12342 -0.04751 -0.03642 0.12337 -0.00454 -0.00869 0.13530 -0.03047 -0.05360 0.12334 0.00343 -0.03483 0.12339 -0.01348 -0.05363 0.12341 0.00341 -0.01783 0.12339 -0.03004 0.00007 0.12347 -0.01305 0.00006 0.12347 -0.05552 -0.02554 0.13885 0.00899 -0.01826 0.13943 -0.02205 -0.06213 0.13538 -0.04687 -0.00227 0.12337 -0.05547 -0.04253 0.13888 -0.04743 -0.05443 0.12342 0.00350 -0.05390 0.12331 -0.05544 -0.00855 0.13909 -0.03909 -0.06264 0.13574 0.01189 -0.04439 0.13460 0.00394 0.00008 0.12346 -0.00505 -0.06225 0.13539 -0.06222 -0.02791 0.12341 -0.04722 0.00630 0.13804 0.01893 -0.02475 0.12343 -0.06185 -0.01028 0.12344 -0.06188 -0.04549 0.12342 -0.03058 -0.07059 0.12336 0.02066 -0.03061 0.13929 0.01237 -0.00165 0.13812 -0.01887 0.01602 0.12299 -0.01360 -0.07072 0.12338 -0.05553 -0.05952 0.13870 -0.03587 0.01603 0.12299 -0.00187 0.01604 0.12299 0.01195 -0.06241 0.13535 0.02039 -0.00420 0.12335 -0.07227 -0.02791 0.13712 0.02566 -0.01481 0.13553 -0.04753 -0.07155 0.12342 0.00338 -0.07090 0.12338 0.02050 -0.05386 0.12341 -0.05271 0.01369 0.12317 -0.02220 -0.07921 0.13538 -0.06373 0.00475 0.13252 -0.07215 -0.04549 0.13744 0.02845 -0.03883 0.12345 -0.06215 -0.06291 0.12342 0.02822 -0.04596 0.13900 -0.07656 -0.01879 0.12344 -0.03919 -0.07966 0.13582 -0.07659 -0.03698 0.12341 -0.00521 -0.07936 0.13537 -0.05566 -0.07652 0.13860 0.03559 -0.02137 0.12339 0.02008 0.01298 0.12299 -0.07654 -0.00172 0.12342 0.02893 0.00188 0.13672 -0.07660 -0.05397 0.12340 -0.03079 -0.08759 0.12335 0.03758 -0.03035 0.13769 -0.01380 -0.08779 0.12336 0.02037 -0.07105 0.12338 0.01179 -0.07953 0.13536 0.02894 -0.06254 0.13533"/>
+    <numeric name="mag_cavity" data="-0.16556 -0.18522 0.08045 0.15552 0.13035 0.30812"/>
+  </custom>
+  <contact>
+    <exclude body1="base_link" body2="gimbal_link"/>
+    <exclude body1="base_link" body2="livox_lidar"/>
+    <exclude body1="base_link" body2="small_yaw_link"/>
+    <exclude body1="base_link" body2="pitch_link"/>
+    <exclude body1="base_link" body2="wheel_fl_link"/>
+    <exclude body1="base_link" body2="wheel_rl_link"/>
+    <exclude body1="base_link" body2="wheel_rr_link"/>
+    <exclude body1="base_link" body2="wheel_fr_link"/>
+    <exclude body1="gimbal_link" body2="livox_lidar"/>
+    <exclude body1="gimbal_link" body2="small_yaw_link"/>
+    <exclude body1="gimbal_link" body2="pitch_link"/>
+    <exclude body1="gimbal_link" body2="wheel_fl_link"/>
+    <exclude body1="gimbal_link" body2="wheel_rl_link"/>
+    <exclude body1="gimbal_link" body2="wheel_rr_link"/>
+    <exclude body1="gimbal_link" body2="wheel_fr_link"/>
+    <exclude body1="livox_lidar" body2="small_yaw_link"/>
+    <exclude body1="livox_lidar" body2="pitch_link"/>
+    <exclude body1="livox_lidar" body2="wheel_fl_link"/>
+    <exclude body1="livox_lidar" body2="wheel_rl_link"/>
+    <exclude body1="livox_lidar" body2="wheel_rr_link"/>
+    <exclude body1="livox_lidar" body2="wheel_fr_link"/>
+    <exclude body1="small_yaw_link" body2="pitch_link"/>
+    <exclude body1="small_yaw_link" body2="wheel_fl_link"/>
+    <exclude body1="small_yaw_link" body2="wheel_rl_link"/>
+    <exclude body1="small_yaw_link" body2="wheel_rr_link"/>
+    <exclude body1="small_yaw_link" body2="wheel_fr_link"/>
+    <exclude body1="pitch_link" body2="wheel_fl_link"/>
+    <exclude body1="pitch_link" body2="wheel_rl_link"/>
+    <exclude body1="pitch_link" body2="wheel_rr_link"/>
+    <exclude body1="pitch_link" body2="wheel_fr_link"/>
+    <exclude body1="wheel_fl_link" body2="wheel_rl_link"/>
+    <exclude body1="wheel_fl_link" body2="wheel_rr_link"/>
+    <exclude body1="wheel_fl_link" body2="wheel_fr_link"/>
+    <exclude body1="wheel_rl_link" body2="wheel_rr_link"/>
+    <exclude body1="wheel_rl_link" body2="wheel_fr_link"/>
+    <exclude body1="wheel_rr_link" body2="wheel_fr_link"/>
+    <exclude body1="proj0" body2="base_link"/>
+    <exclude body1="proj0" body2="gimbal_link"/>
+    <exclude body1="proj0" body2="livox_lidar"/>
+    <exclude body1="proj0" body2="small_yaw_link"/>
+    <exclude body1="proj0" body2="pitch_link"/>
+    <exclude body1="proj0" body2="wheel_fl_link"/>
+    <exclude body1="proj0" body2="wheel_rl_link"/>
+    <exclude body1="proj0" body2="wheel_rr_link"/>
+    <exclude body1="proj0" body2="wheel_fr_link"/>
+    <exclude body1="proj1" body2="base_link"/>
+    <exclude body1="proj1" body2="gimbal_link"/>
+    <exclude body1="proj1" body2="livox_lidar"/>
+    <exclude body1="proj1" body2="small_yaw_link"/>
+    <exclude body1="proj1" body2="pitch_link"/>
+    <exclude body1="proj1" body2="wheel_fl_link"/>
+    <exclude body1="proj1" body2="wheel_rl_link"/>
+    <exclude body1="proj1" body2="wheel_rr_link"/>
+    <exclude body1="proj1" body2="wheel_fr_link"/>
+    <exclude body1="proj2" body2="base_link"/>
+    <exclude body1="proj2" body2="gimbal_link"/>
+    <exclude body1="proj2" body2="livox_lidar"/>
+    <exclude body1="proj2" body2="small_yaw_link"/>
+    <exclude body1="proj2" body2="pitch_link"/>
+    <exclude body1="proj2" body2="wheel_fl_link"/>
+    <exclude body1="proj2" body2="wheel_rl_link"/>
+    <exclude body1="proj2" body2="wheel_rr_link"/>
+    <exclude body1="proj2" body2="wheel_fr_link"/>
+    <exclude body1="proj3" body2="base_link"/>
+    <exclude body1="proj3" body2="gimbal_link"/>
+    <exclude body1="proj3" body2="livox_lidar"/>
+    <exclude body1="proj3" body2="small_yaw_link"/>
+    <exclude body1="proj3" body2="pitch_link"/>
+    <exclude body1="proj3" body2="wheel_fl_link"/>
+    <exclude body1="proj3" body2="wheel_rl_link"/>
+    <exclude body1="proj3" body2="wheel_rr_link"/>
+    <exclude body1="proj3" body2="wheel_fr_link"/>
+    <exclude body1="proj4" body2="base_link"/>
+    <exclude body1="proj4" body2="gimbal_link"/>
+    <exclude body1="proj4" body2="livox_lidar"/>
+    <exclude body1="proj4" body2="small_yaw_link"/>
+    <exclude body1="proj4" body2="pitch_link"/>
+    <exclude body1="proj4" body2="wheel_fl_link"/>
+    <exclude body1="proj4" body2="wheel_rl_link"/>
+    <exclude body1="proj4" body2="wheel_rr_link"/>
+    <exclude body1="proj4" body2="wheel_fr_link"/>
+    <exclude body1="proj5" body2="base_link"/>
+    <exclude body1="proj5" body2="gimbal_link"/>
+    <exclude body1="proj5" body2="livox_lidar"/>
+    <exclude body1="proj5" body2="small_yaw_link"/>
+    <exclude body1="proj5" body2="pitch_link"/>
+    <exclude body1="proj5" body2="wheel_fl_link"/>
+    <exclude body1="proj5" body2="wheel_rl_link"/>
+    <exclude body1="proj5" body2="wheel_rr_link"/>
+    <exclude body1="proj5" body2="wheel_fr_link"/>
+    <exclude body1="proj6" body2="base_link"/>
+    <exclude body1="proj6" body2="gimbal_link"/>
+    <exclude body1="proj6" body2="livox_lidar"/>
+    <exclude body1="proj6" body2="small_yaw_link"/>
+    <exclude body1="proj6" body2="pitch_link"/>
+    <exclude body1="proj6" body2="wheel_fl_link"/>
+    <exclude body1="proj6" body2="wheel_rl_link"/>
+    <exclude body1="proj6" body2="wheel_rr_link"/>
+    <exclude body1="proj6" body2="wheel_fr_link"/>
+    <exclude body1="proj7" body2="base_link"/>
+    <exclude body1="proj7" body2="gimbal_link"/>
+    <exclude body1="proj7" body2="livox_lidar"/>
+    <exclude body1="proj7" body2="small_yaw_link"/>
+    <exclude body1="proj7" body2="pitch_link"/>
+    <exclude body1="proj7" body2="wheel_fl_link"/>
+    <exclude body1="proj7" body2="wheel_rl_link"/>
+    <exclude body1="proj7" body2="wheel_rr_link"/>
+    <exclude body1="proj7" body2="wheel_fr_link"/>
+    <exclude body1="proj8" body2="base_link"/>
+    <exclude body1="proj8" body2="gimbal_link"/>
+    <exclude body1="proj8" body2="livox_lidar"/>
+    <exclude body1="proj8" body2="small_yaw_link"/>
+    <exclude body1="proj8" body2="pitch_link"/>
+    <exclude body1="proj8" body2="wheel_fl_link"/>
+    <exclude body1="proj8" body2="wheel_rl_link"/>
+    <exclude body1="proj8" body2="wheel_rr_link"/>
+    <exclude body1="proj8" body2="wheel_fr_link"/>
+    <exclude body1="proj9" body2="base_link"/>
+    <exclude body1="proj9" body2="gimbal_link"/>
+    <exclude body1="proj9" body2="livox_lidar"/>
+    <exclude body1="proj9" body2="small_yaw_link"/>
+    <exclude body1="proj9" body2="pitch_link"/>
+    <exclude body1="proj9" body2="wheel_fl_link"/>
+    <exclude body1="proj9" body2="wheel_rl_link"/>
+    <exclude body1="proj9" body2="wheel_rr_link"/>
+    <exclude body1="proj9" body2="wheel_fr_link"/>
+    <exclude body1="proj10" body2="base_link"/>
+    <exclude body1="proj10" body2="gimbal_link"/>
+    <exclude body1="proj10" body2="livox_lidar"/>
+    <exclude body1="proj10" body2="small_yaw_link"/>
+    <exclude body1="proj10" body2="pitch_link"/>
+    <exclude body1="proj10" body2="wheel_fl_link"/>
+    <exclude body1="proj10" body2="wheel_rl_link"/>
+    <exclude body1="proj10" body2="wheel_rr_link"/>
+    <exclude body1="proj10" body2="wheel_fr_link"/>
+    <exclude body1="proj11" body2="base_link"/>
+    <exclude body1="proj11" body2="gimbal_link"/>
+    <exclude body1="proj11" body2="livox_lidar"/>
+    <exclude body1="proj11" body2="small_yaw_link"/>
+    <exclude body1="proj11" body2="pitch_link"/>
+    <exclude body1="proj11" body2="wheel_fl_link"/>
+    <exclude body1="proj11" body2="wheel_rl_link"/>
+    <exclude body1="proj11" body2="wheel_rr_link"/>
+    <exclude body1="proj11" body2="wheel_fr_link"/>
+    <exclude body1="proj12" body2="base_link"/>
+    <exclude body1="proj12" body2="gimbal_link"/>
+    <exclude body1="proj12" body2="livox_lidar"/>
+    <exclude body1="proj12" body2="small_yaw_link"/>
+    <exclude body1="proj12" body2="pitch_link"/>
+    <exclude body1="proj12" body2="wheel_fl_link"/>
+    <exclude body1="proj12" body2="wheel_rl_link"/>
+    <exclude body1="proj12" body2="wheel_rr_link"/>
+    <exclude body1="proj12" body2="wheel_fr_link"/>
+    <exclude body1="proj13" body2="base_link"/>
+    <exclude body1="proj13" body2="gimbal_link"/>
+    <exclude body1="proj13" body2="livox_lidar"/>
+    <exclude body1="proj13" body2="small_yaw_link"/>
+    <exclude body1="proj13" body2="pitch_link"/>
+    <exclude body1="proj13" body2="wheel_fl_link"/>
+    <exclude body1="proj13" body2="wheel_rl_link"/>
+    <exclude body1="proj13" body2="wheel_rr_link"/>
+    <exclude body1="proj13" body2="wheel_fr_link"/>
+    <exclude body1="proj14" body2="base_link"/>
+    <exclude body1="proj14" body2="gimbal_link"/>
+    <exclude body1="proj14" body2="livox_lidar"/>
+    <exclude body1="proj14" body2="small_yaw_link"/>
+    <exclude body1="proj14" body2="pitch_link"/>
+    <exclude body1="proj14" body2="wheel_fl_link"/>
+    <exclude body1="proj14" body2="wheel_rl_link"/>
+    <exclude body1="proj14" body2="wheel_rr_link"/>
+    <exclude body1="proj14" body2="wheel_fr_link"/>
+    <exclude body1="proj15" body2="base_link"/>
+    <exclude body1="proj15" body2="gimbal_link"/>
+    <exclude body1="proj15" body2="livox_lidar"/>
+    <exclude body1="proj15" body2="small_yaw_link"/>
+    <exclude body1="proj15" body2="pitch_link"/>
+    <exclude body1="proj15" body2="wheel_fl_link"/>
+    <exclude body1="proj15" body2="wheel_rl_link"/>
+    <exclude body1="proj15" body2="wheel_rr_link"/>
+    <exclude body1="proj15" body2="wheel_fr_link"/>
+    <exclude body1="proj16" body2="base_link"/>
+    <exclude body1="proj16" body2="gimbal_link"/>
+    <exclude body1="proj16" body2="livox_lidar"/>
+    <exclude body1="proj16" body2="small_yaw_link"/>
+    <exclude body1="proj16" body2="pitch_link"/>
+    <exclude body1="proj16" body2="wheel_fl_link"/>
+    <exclude body1="proj16" body2="wheel_rl_link"/>
+    <exclude body1="proj16" body2="wheel_rr_link"/>
+    <exclude body1="proj16" body2="wheel_fr_link"/>
+    <exclude body1="proj17" body2="base_link"/>
+    <exclude body1="proj17" body2="gimbal_link"/>
+    <exclude body1="proj17" body2="livox_lidar"/>
+    <exclude body1="proj17" body2="small_yaw_link"/>
+    <exclude body1="proj17" body2="pitch_link"/>
+    <exclude body1="proj17" body2="wheel_fl_link"/>
+    <exclude body1="proj17" body2="wheel_rl_link"/>
+    <exclude body1="proj17" body2="wheel_rr_link"/>
+    <exclude body1="proj17" body2="wheel_fr_link"/>
+    <exclude body1="proj18" body2="base_link"/>
+    <exclude body1="proj18" body2="gimbal_link"/>
+    <exclude body1="proj18" body2="livox_lidar"/>
+    <exclude body1="proj18" body2="small_yaw_link"/>
+    <exclude body1="proj18" body2="pitch_link"/>
+    <exclude body1="proj18" body2="wheel_fl_link"/>
+    <exclude body1="proj18" body2="wheel_rl_link"/>
+    <exclude body1="proj18" body2="wheel_rr_link"/>
+    <exclude body1="proj18" body2="wheel_fr_link"/>
+    <exclude body1="proj19" body2="base_link"/>
+    <exclude body1="proj19" body2="gimbal_link"/>
+    <exclude body1="proj19" body2="livox_lidar"/>
+    <exclude body1="proj19" body2="small_yaw_link"/>
+    <exclude body1="proj19" body2="pitch_link"/>
+    <exclude body1="proj19" body2="wheel_fl_link"/>
+    <exclude body1="proj19" body2="wheel_rl_link"/>
+    <exclude body1="proj19" body2="wheel_rr_link"/>
+    <exclude body1="proj19" body2="wheel_fr_link"/>
+    <exclude body1="proj20" body2="base_link"/>
+    <exclude body1="proj20" body2="gimbal_link"/>
+    <exclude body1="proj20" body2="livox_lidar"/>
+    <exclude body1="proj20" body2="small_yaw_link"/>
+    <exclude body1="proj20" body2="pitch_link"/>
+    <exclude body1="proj20" body2="wheel_fl_link"/>
+    <exclude body1="proj20" body2="wheel_rl_link"/>
+    <exclude body1="proj20" body2="wheel_rr_link"/>
+    <exclude body1="proj20" body2="wheel_fr_link"/>
+    <exclude body1="proj21" body2="base_link"/>
+    <exclude body1="proj21" body2="gimbal_link"/>
+    <exclude body1="proj21" body2="livox_lidar"/>
+    <exclude body1="proj21" body2="small_yaw_link"/>
+    <exclude body1="proj21" body2="pitch_link"/>
+    <exclude body1="proj21" body2="wheel_fl_link"/>
+    <exclude body1="proj21" body2="wheel_rl_link"/>
+    <exclude body1="proj21" body2="wheel_rr_link"/>
+    <exclude body1="proj21" body2="wheel_fr_link"/>
+    <exclude body1="proj22" body2="base_link"/>
+    <exclude body1="proj22" body2="gimbal_link"/>
+    <exclude body1="proj22" body2="livox_lidar"/>
+    <exclude body1="proj22" body2="small_yaw_link"/>
+    <exclude body1="proj22" body2="pitch_link"/>
+    <exclude body1="proj22" body2="wheel_fl_link"/>
+    <exclude body1="proj22" body2="wheel_rl_link"/>
+    <exclude body1="proj22" body2="wheel_rr_link"/>
+    <exclude body1="proj22" body2="wheel_fr_link"/>
+    <exclude body1="proj23" body2="base_link"/>
+    <exclude body1="proj23" body2="gimbal_link"/>
+    <exclude body1="proj23" body2="livox_lidar"/>
+    <exclude body1="proj23" body2="small_yaw_link"/>
+    <exclude body1="proj23" body2="pitch_link"/>
+    <exclude body1="proj23" body2="wheel_fl_link"/>
+    <exclude body1="proj23" body2="wheel_rl_link"/>
+    <exclude body1="proj23" body2="wheel_rr_link"/>
+    <exclude body1="proj23" body2="wheel_fr_link"/>
+    <exclude body1="proj24" body2="base_link"/>
+    <exclude body1="proj24" body2="gimbal_link"/>
+    <exclude body1="proj24" body2="livox_lidar"/>
+    <exclude body1="proj24" body2="small_yaw_link"/>
+    <exclude body1="proj24" body2="pitch_link"/>
+    <exclude body1="proj24" body2="wheel_fl_link"/>
+    <exclude body1="proj24" body2="wheel_rl_link"/>
+    <exclude body1="proj24" body2="wheel_rr_link"/>
+    <exclude body1="proj24" body2="wheel_fr_link"/>
+    <exclude body1="proj25" body2="base_link"/>
+    <exclude body1="proj25" body2="gimbal_link"/>
+    <exclude body1="proj25" body2="livox_lidar"/>
+    <exclude body1="proj25" body2="small_yaw_link"/>
+    <exclude body1="proj25" body2="pitch_link"/>
+    <exclude body1="proj25" body2="wheel_fl_link"/>
+    <exclude body1="proj25" body2="wheel_rl_link"/>
+    <exclude body1="proj25" body2="wheel_rr_link"/>
+    <exclude body1="proj25" body2="wheel_fr_link"/>
+    <exclude body1="proj26" body2="base_link"/>
+    <exclude body1="proj26" body2="gimbal_link"/>
+    <exclude body1="proj26" body2="livox_lidar"/>
+    <exclude body1="proj26" body2="small_yaw_link"/>
+    <exclude body1="proj26" body2="pitch_link"/>
+    <exclude body1="proj26" body2="wheel_fl_link"/>
+    <exclude body1="proj26" body2="wheel_rl_link"/>
+    <exclude body1="proj26" body2="wheel_rr_link"/>
+    <exclude body1="proj26" body2="wheel_fr_link"/>
+    <exclude body1="proj27" body2="base_link"/>
+    <exclude body1="proj27" body2="gimbal_link"/>
+    <exclude body1="proj27" body2="livox_lidar"/>
+    <exclude body1="proj27" body2="small_yaw_link"/>
+    <exclude body1="proj27" body2="pitch_link"/>
+    <exclude body1="proj27" body2="wheel_fl_link"/>
+    <exclude body1="proj27" body2="wheel_rl_link"/>
+    <exclude body1="proj27" body2="wheel_rr_link"/>
+    <exclude body1="proj27" body2="wheel_fr_link"/>
+    <exclude body1="proj28" body2="base_link"/>
+    <exclude body1="proj28" body2="gimbal_link"/>
+    <exclude body1="proj28" body2="livox_lidar"/>
+    <exclude body1="proj28" body2="small_yaw_link"/>
+    <exclude body1="proj28" body2="pitch_link"/>
+    <exclude body1="proj28" body2="wheel_fl_link"/>
+    <exclude body1="proj28" body2="wheel_rl_link"/>
+    <exclude body1="proj28" body2="wheel_rr_link"/>
+    <exclude body1="proj28" body2="wheel_fr_link"/>
+    <exclude body1="proj29" body2="base_link"/>
+    <exclude body1="proj29" body2="gimbal_link"/>
+    <exclude body1="proj29" body2="livox_lidar"/>
+    <exclude body1="proj29" body2="small_yaw_link"/>
+    <exclude body1="proj29" body2="pitch_link"/>
+    <exclude body1="proj29" body2="wheel_fl_link"/>
+    <exclude body1="proj29" body2="wheel_rl_link"/>
+    <exclude body1="proj29" body2="wheel_rr_link"/>
+    <exclude body1="proj29" body2="wheel_fr_link"/>
+    <exclude body1="proj30" body2="base_link"/>
+    <exclude body1="proj30" body2="gimbal_link"/>
+    <exclude body1="proj30" body2="livox_lidar"/>
+    <exclude body1="proj30" body2="small_yaw_link"/>
+    <exclude body1="proj30" body2="pitch_link"/>
+    <exclude body1="proj30" body2="wheel_fl_link"/>
+    <exclude body1="proj30" body2="wheel_rl_link"/>
+    <exclude body1="proj30" body2="wheel_rr_link"/>
+    <exclude body1="proj30" body2="wheel_fr_link"/>
+    <exclude body1="proj31" body2="base_link"/>
+    <exclude body1="proj31" body2="gimbal_link"/>
+    <exclude body1="proj31" body2="livox_lidar"/>
+    <exclude body1="proj31" body2="small_yaw_link"/>
+    <exclude body1="proj31" body2="pitch_link"/>
+    <exclude body1="proj31" body2="wheel_fl_link"/>
+    <exclude body1="proj31" body2="wheel_rl_link"/>
+    <exclude body1="proj31" body2="wheel_rr_link"/>
+    <exclude body1="proj31" body2="wheel_fr_link"/>
+    <exclude body1="proj32" body2="base_link"/>
+    <exclude body1="proj32" body2="gimbal_link"/>
+    <exclude body1="proj32" body2="livox_lidar"/>
+    <exclude body1="proj32" body2="small_yaw_link"/>
+    <exclude body1="proj32" body2="pitch_link"/>
+    <exclude body1="proj32" body2="wheel_fl_link"/>
+    <exclude body1="proj32" body2="wheel_rl_link"/>
+    <exclude body1="proj32" body2="wheel_rr_link"/>
+    <exclude body1="proj32" body2="wheel_fr_link"/>
+    <exclude body1="proj33" body2="base_link"/>
+    <exclude body1="proj33" body2="gimbal_link"/>
+    <exclude body1="proj33" body2="livox_lidar"/>
+    <exclude body1="proj33" body2="small_yaw_link"/>
+    <exclude body1="proj33" body2="pitch_link"/>
+    <exclude body1="proj33" body2="wheel_fl_link"/>
+    <exclude body1="proj33" body2="wheel_rl_link"/>
+    <exclude body1="proj33" body2="wheel_rr_link"/>
+    <exclude body1="proj33" body2="wheel_fr_link"/>
+    <exclude body1="proj34" body2="base_link"/>
+    <exclude body1="proj34" body2="gimbal_link"/>
+    <exclude body1="proj34" body2="livox_lidar"/>
+    <exclude body1="proj34" body2="small_yaw_link"/>
+    <exclude body1="proj34" body2="pitch_link"/>
+    <exclude body1="proj34" body2="wheel_fl_link"/>
+    <exclude body1="proj34" body2="wheel_rl_link"/>
+    <exclude body1="proj34" body2="wheel_rr_link"/>
+    <exclude body1="proj34" body2="wheel_fr_link"/>
+    <exclude body1="proj35" body2="base_link"/>
+    <exclude body1="proj35" body2="gimbal_link"/>
+    <exclude body1="proj35" body2="livox_lidar"/>
+    <exclude body1="proj35" body2="small_yaw_link"/>
+    <exclude body1="proj35" body2="pitch_link"/>
+    <exclude body1="proj35" body2="wheel_fl_link"/>
+    <exclude body1="proj35" body2="wheel_rl_link"/>
+    <exclude body1="proj35" body2="wheel_rr_link"/>
+    <exclude body1="proj35" body2="wheel_fr_link"/>
+    <exclude body1="proj36" body2="base_link"/>
+    <exclude body1="proj36" body2="gimbal_link"/>
+    <exclude body1="proj36" body2="livox_lidar"/>
+    <exclude body1="proj36" body2="small_yaw_link"/>
+    <exclude body1="proj36" body2="pitch_link"/>
+    <exclude body1="proj36" body2="wheel_fl_link"/>
+    <exclude body1="proj36" body2="wheel_rl_link"/>
+    <exclude body1="proj36" body2="wheel_rr_link"/>
+    <exclude body1="proj36" body2="wheel_fr_link"/>
+    <exclude body1="proj37" body2="base_link"/>
+    <exclude body1="proj37" body2="gimbal_link"/>
+    <exclude body1="proj37" body2="livox_lidar"/>
+    <exclude body1="proj37" body2="small_yaw_link"/>
+    <exclude body1="proj37" body2="pitch_link"/>
+    <exclude body1="proj37" body2="wheel_fl_link"/>
+    <exclude body1="proj37" body2="wheel_rl_link"/>
+    <exclude body1="proj37" body2="wheel_rr_link"/>
+    <exclude body1="proj37" body2="wheel_fr_link"/>
+    <exclude body1="proj38" body2="base_link"/>
+    <exclude body1="proj38" body2="gimbal_link"/>
+    <exclude body1="proj38" body2="livox_lidar"/>
+    <exclude body1="proj38" body2="small_yaw_link"/>
+    <exclude body1="proj38" body2="pitch_link"/>
+    <exclude body1="proj38" body2="wheel_fl_link"/>
+    <exclude body1="proj38" body2="wheel_rl_link"/>
+    <exclude body1="proj38" body2="wheel_rr_link"/>
+    <exclude body1="proj38" body2="wheel_fr_link"/>
+    <exclude body1="proj39" body2="base_link"/>
+    <exclude body1="proj39" body2="gimbal_link"/>
+    <exclude body1="proj39" body2="livox_lidar"/>
+    <exclude body1="proj39" body2="small_yaw_link"/>
+    <exclude body1="proj39" body2="pitch_link"/>
+    <exclude body1="proj39" body2="wheel_fl_link"/>
+    <exclude body1="proj39" body2="wheel_rl_link"/>
+    <exclude body1="proj39" body2="wheel_rr_link"/>
+    <exclude body1="proj39" body2="wheel_fr_link"/>
+    <exclude body1="proj40" body2="base_link"/>
+    <exclude body1="proj40" body2="gimbal_link"/>
+    <exclude body1="proj40" body2="livox_lidar"/>
+    <exclude body1="proj40" body2="small_yaw_link"/>
+    <exclude body1="proj40" body2="pitch_link"/>
+    <exclude body1="proj40" body2="wheel_fl_link"/>
+    <exclude body1="proj40" body2="wheel_rl_link"/>
+    <exclude body1="proj40" body2="wheel_rr_link"/>
+    <exclude body1="proj40" body2="wheel_fr_link"/>
+    <exclude body1="proj41" body2="base_link"/>
+    <exclude body1="proj41" body2="gimbal_link"/>
+    <exclude body1="proj41" body2="livox_lidar"/>
+    <exclude body1="proj41" body2="small_yaw_link"/>
+    <exclude body1="proj41" body2="pitch_link"/>
+    <exclude body1="proj41" body2="wheel_fl_link"/>
+    <exclude body1="proj41" body2="wheel_rl_link"/>
+    <exclude body1="proj41" body2="wheel_rr_link"/>
+    <exclude body1="proj41" body2="wheel_fr_link"/>
+    <exclude body1="proj42" body2="base_link"/>
+    <exclude body1="proj42" body2="gimbal_link"/>
+    <exclude body1="proj42" body2="livox_lidar"/>
+    <exclude body1="proj42" body2="small_yaw_link"/>
+    <exclude body1="proj42" body2="pitch_link"/>
+    <exclude body1="proj42" body2="wheel_fl_link"/>
+    <exclude body1="proj42" body2="wheel_rl_link"/>
+    <exclude body1="proj42" body2="wheel_rr_link"/>
+    <exclude body1="proj42" body2="wheel_fr_link"/>
+    <exclude body1="proj43" body2="base_link"/>
+    <exclude body1="proj43" body2="gimbal_link"/>
+    <exclude body1="proj43" body2="livox_lidar"/>
+    <exclude body1="proj43" body2="small_yaw_link"/>
+    <exclude body1="proj43" body2="pitch_link"/>
+    <exclude body1="proj43" body2="wheel_fl_link"/>
+    <exclude body1="proj43" body2="wheel_rl_link"/>
+    <exclude body1="proj43" body2="wheel_rr_link"/>
+    <exclude body1="proj43" body2="wheel_fr_link"/>
+    <exclude body1="proj44" body2="base_link"/>
+    <exclude body1="proj44" body2="gimbal_link"/>
+    <exclude body1="proj44" body2="livox_lidar"/>
+    <exclude body1="proj44" body2="small_yaw_link"/>
+    <exclude body1="proj44" body2="pitch_link"/>
+    <exclude body1="proj44" body2="wheel_fl_link"/>
+    <exclude body1="proj44" body2="wheel_rl_link"/>
+    <exclude body1="proj44" body2="wheel_rr_link"/>
+    <exclude body1="proj44" body2="wheel_fr_link"/>
+    <exclude body1="proj45" body2="base_link"/>
+    <exclude body1="proj45" body2="gimbal_link"/>
+    <exclude body1="proj45" body2="livox_lidar"/>
+    <exclude body1="proj45" body2="small_yaw_link"/>
+    <exclude body1="proj45" body2="pitch_link"/>
+    <exclude body1="proj45" body2="wheel_fl_link"/>
+    <exclude body1="proj45" body2="wheel_rl_link"/>
+    <exclude body1="proj45" body2="wheel_rr_link"/>
+    <exclude body1="proj45" body2="wheel_fr_link"/>
+    <exclude body1="proj46" body2="base_link"/>
+    <exclude body1="proj46" body2="gimbal_link"/>
+    <exclude body1="proj46" body2="livox_lidar"/>
+    <exclude body1="proj46" body2="small_yaw_link"/>
+    <exclude body1="proj46" body2="pitch_link"/>
+    <exclude body1="proj46" body2="wheel_fl_link"/>
+    <exclude body1="proj46" body2="wheel_rl_link"/>
+    <exclude body1="proj46" body2="wheel_rr_link"/>
+    <exclude body1="proj46" body2="wheel_fr_link"/>
+    <exclude body1="proj47" body2="base_link"/>
+    <exclude body1="proj47" body2="gimbal_link"/>
+    <exclude body1="proj47" body2="livox_lidar"/>
+    <exclude body1="proj47" body2="small_yaw_link"/>
+    <exclude body1="proj47" body2="pitch_link"/>
+    <exclude body1="proj47" body2="wheel_fl_link"/>
+    <exclude body1="proj47" body2="wheel_rl_link"/>
+    <exclude body1="proj47" body2="wheel_rr_link"/>
+    <exclude body1="proj47" body2="wheel_fr_link"/>
+    <exclude body1="proj48" body2="base_link"/>
+    <exclude body1="proj48" body2="gimbal_link"/>
+    <exclude body1="proj48" body2="livox_lidar"/>
+    <exclude body1="proj48" body2="small_yaw_link"/>
+    <exclude body1="proj48" body2="pitch_link"/>
+    <exclude body1="proj48" body2="wheel_fl_link"/>
+    <exclude body1="proj48" body2="wheel_rl_link"/>
+    <exclude body1="proj48" body2="wheel_rr_link"/>
+    <exclude body1="proj48" body2="wheel_fr_link"/>
+    <exclude body1="proj49" body2="base_link"/>
+    <exclude body1="proj49" body2="gimbal_link"/>
+    <exclude body1="proj49" body2="livox_lidar"/>
+    <exclude body1="proj49" body2="small_yaw_link"/>
+    <exclude body1="proj49" body2="pitch_link"/>
+    <exclude body1="proj49" body2="wheel_fl_link"/>
+    <exclude body1="proj49" body2="wheel_rl_link"/>
+    <exclude body1="proj49" body2="wheel_rr_link"/>
+    <exclude body1="proj49" body2="wheel_fr_link"/>
+    <exclude body1="proj50" body2="base_link"/>
+    <exclude body1="proj50" body2="gimbal_link"/>
+    <exclude body1="proj50" body2="livox_lidar"/>
+    <exclude body1="proj50" body2="small_yaw_link"/>
+    <exclude body1="proj50" body2="pitch_link"/>
+    <exclude body1="proj50" body2="wheel_fl_link"/>
+    <exclude body1="proj50" body2="wheel_rl_link"/>
+    <exclude body1="proj50" body2="wheel_rr_link"/>
+    <exclude body1="proj50" body2="wheel_fr_link"/>
+    <exclude body1="proj51" body2="base_link"/>
+    <exclude body1="proj51" body2="gimbal_link"/>
+    <exclude body1="proj51" body2="livox_lidar"/>
+    <exclude body1="proj51" body2="small_yaw_link"/>
+    <exclude body1="proj51" body2="pitch_link"/>
+    <exclude body1="proj51" body2="wheel_fl_link"/>
+    <exclude body1="proj51" body2="wheel_rl_link"/>
+    <exclude body1="proj51" body2="wheel_rr_link"/>
+    <exclude body1="proj51" body2="wheel_fr_link"/>
+    <exclude body1="proj52" body2="base_link"/>
+    <exclude body1="proj52" body2="gimbal_link"/>
+    <exclude body1="proj52" body2="livox_lidar"/>
+    <exclude body1="proj52" body2="small_yaw_link"/>
+    <exclude body1="proj52" body2="pitch_link"/>
+    <exclude body1="proj52" body2="wheel_fl_link"/>
+    <exclude body1="proj52" body2="wheel_rl_link"/>
+    <exclude body1="proj52" body2="wheel_rr_link"/>
+    <exclude body1="proj52" body2="wheel_fr_link"/>
+    <exclude body1="proj53" body2="base_link"/>
+    <exclude body1="proj53" body2="gimbal_link"/>
+    <exclude body1="proj53" body2="livox_lidar"/>
+    <exclude body1="proj53" body2="small_yaw_link"/>
+    <exclude body1="proj53" body2="pitch_link"/>
+    <exclude body1="proj53" body2="wheel_fl_link"/>
+    <exclude body1="proj53" body2="wheel_rl_link"/>
+    <exclude body1="proj53" body2="wheel_rr_link"/>
+    <exclude body1="proj53" body2="wheel_fr_link"/>
+    <exclude body1="proj54" body2="base_link"/>
+    <exclude body1="proj54" body2="gimbal_link"/>
+    <exclude body1="proj54" body2="livox_lidar"/>
+    <exclude body1="proj54" body2="small_yaw_link"/>
+    <exclude body1="proj54" body2="pitch_link"/>
+    <exclude body1="proj54" body2="wheel_fl_link"/>
+    <exclude body1="proj54" body2="wheel_rl_link"/>
+    <exclude body1="proj54" body2="wheel_rr_link"/>
+    <exclude body1="proj54" body2="wheel_fr_link"/>
+    <exclude body1="proj55" body2="base_link"/>
+    <exclude body1="proj55" body2="gimbal_link"/>
+    <exclude body1="proj55" body2="livox_lidar"/>
+    <exclude body1="proj55" body2="small_yaw_link"/>
+    <exclude body1="proj55" body2="pitch_link"/>
+    <exclude body1="proj55" body2="wheel_fl_link"/>
+    <exclude body1="proj55" body2="wheel_rl_link"/>
+    <exclude body1="proj55" body2="wheel_rr_link"/>
+    <exclude body1="proj55" body2="wheel_fr_link"/>
+    <exclude body1="proj56" body2="base_link"/>
+    <exclude body1="proj56" body2="gimbal_link"/>
+    <exclude body1="proj56" body2="livox_lidar"/>
+    <exclude body1="proj56" body2="small_yaw_link"/>
+    <exclude body1="proj56" body2="pitch_link"/>
+    <exclude body1="proj56" body2="wheel_fl_link"/>
+    <exclude body1="proj56" body2="wheel_rl_link"/>
+    <exclude body1="proj56" body2="wheel_rr_link"/>
+    <exclude body1="proj56" body2="wheel_fr_link"/>
+    <exclude body1="proj57" body2="base_link"/>
+    <exclude body1="proj57" body2="gimbal_link"/>
+    <exclude body1="proj57" body2="livox_lidar"/>
+    <exclude body1="proj57" body2="small_yaw_link"/>
+    <exclude body1="proj57" body2="pitch_link"/>
+    <exclude body1="proj57" body2="wheel_fl_link"/>
+    <exclude body1="proj57" body2="wheel_rl_link"/>
+    <exclude body1="proj57" body2="wheel_rr_link"/>
+    <exclude body1="proj57" body2="wheel_fr_link"/>
+    <exclude body1="proj58" body2="base_link"/>
+    <exclude body1="proj58" body2="gimbal_link"/>
+    <exclude body1="proj58" body2="livox_lidar"/>
+    <exclude body1="proj58" body2="small_yaw_link"/>
+    <exclude body1="proj58" body2="pitch_link"/>
+    <exclude body1="proj58" body2="wheel_fl_link"/>
+    <exclude body1="proj58" body2="wheel_rl_link"/>
+    <exclude body1="proj58" body2="wheel_rr_link"/>
+    <exclude body1="proj58" body2="wheel_fr_link"/>
+    <exclude body1="proj59" body2="base_link"/>
+    <exclude body1="proj59" body2="gimbal_link"/>
+    <exclude body1="proj59" body2="livox_lidar"/>
+    <exclude body1="proj59" body2="small_yaw_link"/>
+    <exclude body1="proj59" body2="pitch_link"/>
+    <exclude body1="proj59" body2="wheel_fl_link"/>
+    <exclude body1="proj59" body2="wheel_rl_link"/>
+    <exclude body1="proj59" body2="wheel_rr_link"/>
+    <exclude body1="proj59" body2="wheel_fr_link"/>
+    <exclude body1="proj60" body2="base_link"/>
+    <exclude body1="proj60" body2="gimbal_link"/>
+    <exclude body1="proj60" body2="livox_lidar"/>
+    <exclude body1="proj60" body2="small_yaw_link"/>
+    <exclude body1="proj60" body2="pitch_link"/>
+    <exclude body1="proj60" body2="wheel_fl_link"/>
+    <exclude body1="proj60" body2="wheel_rl_link"/>
+    <exclude body1="proj60" body2="wheel_rr_link"/>
+    <exclude body1="proj60" body2="wheel_fr_link"/>
+    <exclude body1="proj61" body2="base_link"/>
+    <exclude body1="proj61" body2="gimbal_link"/>
+    <exclude body1="proj61" body2="livox_lidar"/>
+    <exclude body1="proj61" body2="small_yaw_link"/>
+    <exclude body1="proj61" body2="pitch_link"/>
+    <exclude body1="proj61" body2="wheel_fl_link"/>
+    <exclude body1="proj61" body2="wheel_rl_link"/>
+    <exclude body1="proj61" body2="wheel_rr_link"/>
+    <exclude body1="proj61" body2="wheel_fr_link"/>
+    <exclude body1="proj62" body2="base_link"/>
+    <exclude body1="proj62" body2="gimbal_link"/>
+    <exclude body1="proj62" body2="livox_lidar"/>
+    <exclude body1="proj62" body2="small_yaw_link"/>
+    <exclude body1="proj62" body2="pitch_link"/>
+    <exclude body1="proj62" body2="wheel_fl_link"/>
+    <exclude body1="proj62" body2="wheel_rl_link"/>
+    <exclude body1="proj62" body2="wheel_rr_link"/>
+    <exclude body1="proj62" body2="wheel_fr_link"/>
+    <exclude body1="proj63" body2="base_link"/>
+    <exclude body1="proj63" body2="gimbal_link"/>
+    <exclude body1="proj63" body2="livox_lidar"/>
+    <exclude body1="proj63" body2="small_yaw_link"/>
+    <exclude body1="proj63" body2="pitch_link"/>
+    <exclude body1="proj63" body2="wheel_fl_link"/>
+    <exclude body1="proj63" body2="wheel_rl_link"/>
+    <exclude body1="proj63" body2="wheel_rr_link"/>
+    <exclude body1="proj63" body2="wheel_fr_link"/>
+    <exclude body1="proj64" body2="base_link"/>
+    <exclude body1="proj64" body2="gimbal_link"/>
+    <exclude body1="proj64" body2="livox_lidar"/>
+    <exclude body1="proj64" body2="small_yaw_link"/>
+    <exclude body1="proj64" body2="pitch_link"/>
+    <exclude body1="proj64" body2="wheel_fl_link"/>
+    <exclude body1="proj64" body2="wheel_rl_link"/>
+    <exclude body1="proj64" body2="wheel_rr_link"/>
+    <exclude body1="proj64" body2="wheel_fr_link"/>
+    <exclude body1="proj65" body2="base_link"/>
+    <exclude body1="proj65" body2="gimbal_link"/>
+    <exclude body1="proj65" body2="livox_lidar"/>
+    <exclude body1="proj65" body2="small_yaw_link"/>
+    <exclude body1="proj65" body2="pitch_link"/>
+    <exclude body1="proj65" body2="wheel_fl_link"/>
+    <exclude body1="proj65" body2="wheel_rl_link"/>
+    <exclude body1="proj65" body2="wheel_rr_link"/>
+    <exclude body1="proj65" body2="wheel_fr_link"/>
+    <exclude body1="proj66" body2="base_link"/>
+    <exclude body1="proj66" body2="gimbal_link"/>
+    <exclude body1="proj66" body2="livox_lidar"/>
+    <exclude body1="proj66" body2="small_yaw_link"/>
+    <exclude body1="proj66" body2="pitch_link"/>
+    <exclude body1="proj66" body2="wheel_fl_link"/>
+    <exclude body1="proj66" body2="wheel_rl_link"/>
+    <exclude body1="proj66" body2="wheel_rr_link"/>
+    <exclude body1="proj66" body2="wheel_fr_link"/>
+    <exclude body1="proj67" body2="base_link"/>
+    <exclude body1="proj67" body2="gimbal_link"/>
+    <exclude body1="proj67" body2="livox_lidar"/>
+    <exclude body1="proj67" body2="small_yaw_link"/>
+    <exclude body1="proj67" body2="pitch_link"/>
+    <exclude body1="proj67" body2="wheel_fl_link"/>
+    <exclude body1="proj67" body2="wheel_rl_link"/>
+    <exclude body1="proj67" body2="wheel_rr_link"/>
+    <exclude body1="proj67" body2="wheel_fr_link"/>
+    <exclude body1="proj68" body2="base_link"/>
+    <exclude body1="proj68" body2="gimbal_link"/>
+    <exclude body1="proj68" body2="livox_lidar"/>
+    <exclude body1="proj68" body2="small_yaw_link"/>
+    <exclude body1="proj68" body2="pitch_link"/>
+    <exclude body1="proj68" body2="wheel_fl_link"/>
+    <exclude body1="proj68" body2="wheel_rl_link"/>
+    <exclude body1="proj68" body2="wheel_rr_link"/>
+    <exclude body1="proj68" body2="wheel_fr_link"/>
+    <exclude body1="proj69" body2="base_link"/>
+    <exclude body1="proj69" body2="gimbal_link"/>
+    <exclude body1="proj69" body2="livox_lidar"/>
+    <exclude body1="proj69" body2="small_yaw_link"/>
+    <exclude body1="proj69" body2="pitch_link"/>
+    <exclude body1="proj69" body2="wheel_fl_link"/>
+    <exclude body1="proj69" body2="wheel_rl_link"/>
+    <exclude body1="proj69" body2="wheel_rr_link"/>
+    <exclude body1="proj69" body2="wheel_fr_link"/>
+    <exclude body1="proj70" body2="base_link"/>
+    <exclude body1="proj70" body2="gimbal_link"/>
+    <exclude body1="proj70" body2="livox_lidar"/>
+    <exclude body1="proj70" body2="small_yaw_link"/>
+    <exclude body1="proj70" body2="pitch_link"/>
+    <exclude body1="proj70" body2="wheel_fl_link"/>
+    <exclude body1="proj70" body2="wheel_rl_link"/>
+    <exclude body1="proj70" body2="wheel_rr_link"/>
+    <exclude body1="proj70" body2="wheel_fr_link"/>
+    <exclude body1="proj71" body2="base_link"/>
+    <exclude body1="proj71" body2="gimbal_link"/>
+    <exclude body1="proj71" body2="livox_lidar"/>
+    <exclude body1="proj71" body2="small_yaw_link"/>
+    <exclude body1="proj71" body2="pitch_link"/>
+    <exclude body1="proj71" body2="wheel_fl_link"/>
+    <exclude body1="proj71" body2="wheel_rl_link"/>
+    <exclude body1="proj71" body2="wheel_rr_link"/>
+    <exclude body1="proj71" body2="wheel_fr_link"/>
+    <exclude body1="proj72" body2="base_link"/>
+    <exclude body1="proj72" body2="gimbal_link"/>
+    <exclude body1="proj72" body2="livox_lidar"/>
+    <exclude body1="proj72" body2="small_yaw_link"/>
+    <exclude body1="proj72" body2="pitch_link"/>
+    <exclude body1="proj72" body2="wheel_fl_link"/>
+    <exclude body1="proj72" body2="wheel_rl_link"/>
+    <exclude body1="proj72" body2="wheel_rr_link"/>
+    <exclude body1="proj72" body2="wheel_fr_link"/>
+    <exclude body1="proj73" body2="base_link"/>
+    <exclude body1="proj73" body2="gimbal_link"/>
+    <exclude body1="proj73" body2="livox_lidar"/>
+    <exclude body1="proj73" body2="small_yaw_link"/>
+    <exclude body1="proj73" body2="pitch_link"/>
+    <exclude body1="proj73" body2="wheel_fl_link"/>
+    <exclude body1="proj73" body2="wheel_rl_link"/>
+    <exclude body1="proj73" body2="wheel_rr_link"/>
+    <exclude body1="proj73" body2="wheel_fr_link"/>
+    <exclude body1="proj74" body2="base_link"/>
+    <exclude body1="proj74" body2="gimbal_link"/>
+    <exclude body1="proj74" body2="livox_lidar"/>
+    <exclude body1="proj74" body2="small_yaw_link"/>
+    <exclude body1="proj74" body2="pitch_link"/>
+    <exclude body1="proj74" body2="wheel_fl_link"/>
+    <exclude body1="proj74" body2="wheel_rl_link"/>
+    <exclude body1="proj74" body2="wheel_rr_link"/>
+    <exclude body1="proj74" body2="wheel_fr_link"/>
+    <exclude body1="proj75" body2="base_link"/>
+    <exclude body1="proj75" body2="gimbal_link"/>
+    <exclude body1="proj75" body2="livox_lidar"/>
+    <exclude body1="proj75" body2="small_yaw_link"/>
+    <exclude body1="proj75" body2="pitch_link"/>
+    <exclude body1="proj75" body2="wheel_fl_link"/>
+    <exclude body1="proj75" body2="wheel_rl_link"/>
+    <exclude body1="proj75" body2="wheel_rr_link"/>
+    <exclude body1="proj75" body2="wheel_fr_link"/>
+    <exclude body1="proj76" body2="base_link"/>
+    <exclude body1="proj76" body2="gimbal_link"/>
+    <exclude body1="proj76" body2="livox_lidar"/>
+    <exclude body1="proj76" body2="small_yaw_link"/>
+    <exclude body1="proj76" body2="pitch_link"/>
+    <exclude body1="proj76" body2="wheel_fl_link"/>
+    <exclude body1="proj76" body2="wheel_rl_link"/>
+    <exclude body1="proj76" body2="wheel_rr_link"/>
+    <exclude body1="proj76" body2="wheel_fr_link"/>
+    <exclude body1="proj77" body2="base_link"/>
+    <exclude body1="proj77" body2="gimbal_link"/>
+    <exclude body1="proj77" body2="livox_lidar"/>
+    <exclude body1="proj77" body2="small_yaw_link"/>
+    <exclude body1="proj77" body2="pitch_link"/>
+    <exclude body1="proj77" body2="wheel_fl_link"/>
+    <exclude body1="proj77" body2="wheel_rl_link"/>
+    <exclude body1="proj77" body2="wheel_rr_link"/>
+    <exclude body1="proj77" body2="wheel_fr_link"/>
+    <exclude body1="proj78" body2="base_link"/>
+    <exclude body1="proj78" body2="gimbal_link"/>
+    <exclude body1="proj78" body2="livox_lidar"/>
+    <exclude body1="proj78" body2="small_yaw_link"/>
+    <exclude body1="proj78" body2="pitch_link"/>
+    <exclude body1="proj78" body2="wheel_fl_link"/>
+    <exclude body1="proj78" body2="wheel_rl_link"/>
+    <exclude body1="proj78" body2="wheel_rr_link"/>
+    <exclude body1="proj78" body2="wheel_fr_link"/>
+    <exclude body1="proj79" body2="base_link"/>
+    <exclude body1="proj79" body2="gimbal_link"/>
+    <exclude body1="proj79" body2="livox_lidar"/>
+    <exclude body1="proj79" body2="small_yaw_link"/>
+    <exclude body1="proj79" body2="pitch_link"/>
+    <exclude body1="proj79" body2="wheel_fl_link"/>
+    <exclude body1="proj79" body2="wheel_rl_link"/>
+    <exclude body1="proj79" body2="wheel_rr_link"/>
+    <exclude body1="proj79" body2="wheel_fr_link"/>
+    <exclude body1="proj80" body2="base_link"/>
+    <exclude body1="proj80" body2="gimbal_link"/>
+    <exclude body1="proj80" body2="livox_lidar"/>
+    <exclude body1="proj80" body2="small_yaw_link"/>
+    <exclude body1="proj80" body2="pitch_link"/>
+    <exclude body1="proj80" body2="wheel_fl_link"/>
+    <exclude body1="proj80" body2="wheel_rl_link"/>
+    <exclude body1="proj80" body2="wheel_rr_link"/>
+    <exclude body1="proj80" body2="wheel_fr_link"/>
+    <exclude body1="proj81" body2="base_link"/>
+    <exclude body1="proj81" body2="gimbal_link"/>
+    <exclude body1="proj81" body2="livox_lidar"/>
+    <exclude body1="proj81" body2="small_yaw_link"/>
+    <exclude body1="proj81" body2="pitch_link"/>
+    <exclude body1="proj81" body2="wheel_fl_link"/>
+    <exclude body1="proj81" body2="wheel_rl_link"/>
+    <exclude body1="proj81" body2="wheel_rr_link"/>
+    <exclude body1="proj81" body2="wheel_fr_link"/>
+    <exclude body1="proj82" body2="base_link"/>
+    <exclude body1="proj82" body2="gimbal_link"/>
+    <exclude body1="proj82" body2="livox_lidar"/>
+    <exclude body1="proj82" body2="small_yaw_link"/>
+    <exclude body1="proj82" body2="pitch_link"/>
+    <exclude body1="proj82" body2="wheel_fl_link"/>
+    <exclude body1="proj82" body2="wheel_rl_link"/>
+    <exclude body1="proj82" body2="wheel_rr_link"/>
+    <exclude body1="proj82" body2="wheel_fr_link"/>
+    <exclude body1="proj83" body2="base_link"/>
+    <exclude body1="proj83" body2="gimbal_link"/>
+    <exclude body1="proj83" body2="livox_lidar"/>
+    <exclude body1="proj83" body2="small_yaw_link"/>
+    <exclude body1="proj83" body2="pitch_link"/>
+    <exclude body1="proj83" body2="wheel_fl_link"/>
+    <exclude body1="proj83" body2="wheel_rl_link"/>
+    <exclude body1="proj83" body2="wheel_rr_link"/>
+    <exclude body1="proj83" body2="wheel_fr_link"/>
+    <exclude body1="proj84" body2="base_link"/>
+    <exclude body1="proj84" body2="gimbal_link"/>
+    <exclude body1="proj84" body2="livox_lidar"/>
+    <exclude body1="proj84" body2="small_yaw_link"/>
+    <exclude body1="proj84" body2="pitch_link"/>
+    <exclude body1="proj84" body2="wheel_fl_link"/>
+    <exclude body1="proj84" body2="wheel_rl_link"/>
+    <exclude body1="proj84" body2="wheel_rr_link"/>
+    <exclude body1="proj84" body2="wheel_fr_link"/>
+    <exclude body1="proj85" body2="base_link"/>
+    <exclude body1="proj85" body2="gimbal_link"/>
+    <exclude body1="proj85" body2="livox_lidar"/>
+    <exclude body1="proj85" body2="small_yaw_link"/>
+    <exclude body1="proj85" body2="pitch_link"/>
+    <exclude body1="proj85" body2="wheel_fl_link"/>
+    <exclude body1="proj85" body2="wheel_rl_link"/>
+    <exclude body1="proj85" body2="wheel_rr_link"/>
+    <exclude body1="proj85" body2="wheel_fr_link"/>
+    <exclude body1="proj86" body2="base_link"/>
+    <exclude body1="proj86" body2="gimbal_link"/>
+    <exclude body1="proj86" body2="livox_lidar"/>
+    <exclude body1="proj86" body2="small_yaw_link"/>
+    <exclude body1="proj86" body2="pitch_link"/>
+    <exclude body1="proj86" body2="wheel_fl_link"/>
+    <exclude body1="proj86" body2="wheel_rl_link"/>
+    <exclude body1="proj86" body2="wheel_rr_link"/>
+    <exclude body1="proj86" body2="wheel_fr_link"/>
+    <exclude body1="proj87" body2="base_link"/>
+    <exclude body1="proj87" body2="gimbal_link"/>
+    <exclude body1="proj87" body2="livox_lidar"/>
+    <exclude body1="proj87" body2="small_yaw_link"/>
+    <exclude body1="proj87" body2="pitch_link"/>
+    <exclude body1="proj87" body2="wheel_fl_link"/>
+    <exclude body1="proj87" body2="wheel_rl_link"/>
+    <exclude body1="proj87" body2="wheel_rr_link"/>
+    <exclude body1="proj87" body2="wheel_fr_link"/>
+    <exclude body1="proj88" body2="base_link"/>
+    <exclude body1="proj88" body2="gimbal_link"/>
+    <exclude body1="proj88" body2="livox_lidar"/>
+    <exclude body1="proj88" body2="small_yaw_link"/>
+    <exclude body1="proj88" body2="pitch_link"/>
+    <exclude body1="proj88" body2="wheel_fl_link"/>
+    <exclude body1="proj88" body2="wheel_rl_link"/>
+    <exclude body1="proj88" body2="wheel_rr_link"/>
+    <exclude body1="proj88" body2="wheel_fr_link"/>
+    <exclude body1="proj89" body2="base_link"/>
+    <exclude body1="proj89" body2="gimbal_link"/>
+    <exclude body1="proj89" body2="livox_lidar"/>
+    <exclude body1="proj89" body2="small_yaw_link"/>
+    <exclude body1="proj89" body2="pitch_link"/>
+    <exclude body1="proj89" body2="wheel_fl_link"/>
+    <exclude body1="proj89" body2="wheel_rl_link"/>
+    <exclude body1="proj89" body2="wheel_rr_link"/>
+    <exclude body1="proj89" body2="wheel_fr_link"/>
+    <exclude body1="hopper" body2="feeder"/>
+  </contact>
+  <actuator>
+    <motor name="big_yaw_joint_trq" joint="big_yaw_joint" gear="1" ctrlrange="-12.0 12.0"/>
+    <motor name="small_yaw_joint_trq" joint="small_yaw_joint" gear="1" ctrlrange="-6.0 6.0"/>
+    <motor name="pitch_joint_trq" joint="pitch_joint" gear="1" ctrlrange="-6.0 6.0"/>
+    <motor name="wheel_fl_joint_trq" joint="wheel_fl_joint" gear="1" ctrlrange="-6 6"/>
+    <motor name="wheel_rl_joint_trq" joint="wheel_rl_joint" gear="1" ctrlrange="-6 6"/>
+    <motor name="wheel_rr_joint_trq" joint="wheel_rr_joint" gear="1" ctrlrange="-6 6"/>
+    <motor name="wheel_fr_joint_trq" joint="wheel_fr_joint" gear="1" ctrlrange="-6 6"/>
+    <velocity name="fric_left_joint_vel" joint="fric_left_joint" kv="0.05" ctrlrange="-1400 1400"/>
+    <velocity name="fric_right_joint_vel" joint="fric_right_joint" kv="0.05" ctrlrange="-1400 1400"/>
+    <velocity name="feeder_joint_vel" joint="feeder_joint" kv="0.5" ctrlrange="-60 60"/>
+  </actuator>
+  <sensor>
+    <jointpos name="big_yaw_joint_pos" joint="big_yaw_joint"/>
+    <jointvel name="big_yaw_joint_vel" joint="big_yaw_joint"/>
+    <jointpos name="small_yaw_joint_pos" joint="small_yaw_joint"/>
+    <jointvel name="small_yaw_joint_vel" joint="small_yaw_joint"/>
+    <jointpos name="pitch_joint_pos" joint="pitch_joint"/>
+    <jointvel name="pitch_joint_vel" joint="pitch_joint"/>
+    <jointpos name="wheel_fl_joint_pos" joint="wheel_fl_joint"/>
+    <jointvel name="wheel_fl_joint_vel" joint="wheel_fl_joint"/>
+    <jointpos name="wheel_rl_joint_pos" joint="wheel_rl_joint"/>
+    <jointvel name="wheel_rl_joint_vel" joint="wheel_rl_joint"/>
+    <jointpos name="wheel_rr_joint_pos" joint="wheel_rr_joint"/>
+    <jointvel name="wheel_rr_joint_vel" joint="wheel_rr_joint"/>
+    <jointpos name="wheel_fr_joint_pos" joint="wheel_fr_joint"/>
+    <jointvel name="wheel_fr_joint_vel" joint="wheel_fr_joint"/>
+    <jointactuatorfrc name="big_yaw_joint_frc" joint="big_yaw_joint"/>
+    <jointactuatorfrc name="small_yaw_joint_frc" joint="small_yaw_joint"/>
+    <jointactuatorfrc name="pitch_joint_frc" joint="pitch_joint"/>
+    <framequat name="imu_quat" objtype="site" objname="gimbal_imu"/>
+    <gyro name="imu_gyro" site="gimbal_imu"/>
+    <accelerometer name="imu_acc" site="gimbal_imu"/>
+    <framepos name="muzzle_pos" objtype="site" objname="muzzle"/>
+    <jointvel name="fric_left_joint_vel" joint="fric_left_joint"/>
+    <jointvel name="fric_right_joint_vel" joint="fric_right_joint"/>
+    <jointvel name="feeder_joint_vel" joint="feeder_joint"/>
+  </sensor>
+</mujoco>
