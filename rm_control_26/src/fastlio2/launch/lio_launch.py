@@ -1,5 +1,6 @@
 import launch
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 import launch_ros.actions
 from launch.substitutions import PathJoinSubstitution
@@ -20,6 +21,7 @@ def generate_launch_description():
     return launch.LaunchDescription(
         [
             DeclareLaunchArgument("use_sim_time", default_value="true"),
+            DeclareLaunchArgument("rviz", default_value="false"),
             launch_ros.actions.Node(
                 package="fastlio2",
                 namespace="fastlio2",
@@ -37,6 +39,7 @@ def generate_launch_description():
                 executable="rviz2",
                 name="rviz2",
                 output="screen",
+                condition=IfCondition(LaunchConfiguration("rviz")),
                 arguments=["-d", rviz_cfg.perform(launch.LaunchContext())],
                 parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
             ),

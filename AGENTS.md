@@ -76,6 +76,23 @@
 - 参数：`config/car_control.yaml`（默认线速 0.5 m/s、角速 0.8 rad/s、限速、看门狗 timeout 0.5s）。
 - 启动：`colcon build --packages-select car_control && source install/setup.bash && ros2 launch car_control car_control.launch.py`。
 
+## 导航栈（fastlio2 + localizer + livox_to_laserscan + nav2，2026-09-09 修复后全链可用）
+
+- 启动：`./scripts/start_navigation.sh`（前提：仿真已起、**车在 spawn 点 (-5,0,0.3) yaw=0**——车被开走后初始定位会对不上，可用 `gz service -s /world/default/set_pose --reqtype gz.msgs.Pose --reptype gz.msgs.Boolean --req 'name: "sentry_bot", position: {x: -5, y: 0, z: 0.3}, orientation: {w: 1}'` 归位后重跑）。组件日志落盘在 `logs/navigation/*.log`（fastlio2/localizer/livox_to_laserscan/nav2），排障先看这里。
+- **fastlio2 已修复三处**（`src/fastlio2`）：
+  1. `lio_node.cpp`：config 的 `r_il` 经 SVD 投影到严格正交旋转阵——9/7 填入的 4 位小数斜装外参正交误差 ~1e-4，超过 Sophus `SO3(Matrix)` 断言，导致每次进 `IESKF::update()` 必 SIGABRT（exit -6），此前 `/fastlio2/lio_odom` 无发布者。
+  2. `lio_node.cpp` `imuCB`：livox 内置 IMU 与雷达同源平行，IMU 测量先乘 `r_il` 转到 base_link 系再积分——否则 LIO 状态是斜装 IMU 体姿态（含 60° roll），`odom→base_link` TF 会带 60° 斜装角，nav2 costmap 方向全错。
+  3. `lidar_processor.cpp`：选点分母 `sqrt(norm())`（四次方根）改为 `norm()`。
+- **`r_il` 的安装角除 60° 斜装外还含约 -77.4° yaw**（ZYX 分解 atan2(-0.9762, 0.2169)），world1 旧地图（08:48 建）odom 系 x 轴沿雷达朝向（非车头）；修复后 LIO 的 odom 系 x 轴沿车头，两者差 77.4° yaw + `t_il` 平移。**脚本默认初始位姿 (x=-0.043, y=0.211, z=-0.336, yaw=1.35) 即该变换**，仅对"车在 spawn 点 + 旧地图"有效；**用修复后 LIO 重建地图后应改回全 0**。
+- `livox_to_laserscan`（`pointcloud_to_scan.py`）：TF 查询用 `Time(0)`（最新）而非点云时刻——慢仿真 RTF<1 下点云 stamp 恒超前 robot_state_publisher TF 0.2~0.7s，按点云时刻查会持续 "extrapolation into the future" 丢帧（/scan 仅 0.5Hz）；**scan 的 stamp 必须保持点云时刻**（lio_odom/map→odom TF 均以点云时刻为基准），改成 joint-TF 时刻会让 controller 报 "Transform data too old" 直接 Goal failed。
+- `sentry_nav2_bringup` `nav2_params.yaml`：local costmap voxel 层 `origin_z: 0.0 → -0.2`（传感器原点 z≈0 恰在体素下边界，被拒后无法 raytrace，每帧刷 "out of map bounds" 警告）。
+- localizer 的 `relocalize` 服务返回 success 只代表已受理，配准是否收敛要查 `/localizer/relocalize_check`（`interface/srv/IsValid`）；脚本在启动 nav2 前轮询该服务 45s，未收敛会 fail 退出（否则 nav2 激活时 `odom→base_link`/`map→odom` 缺失，controller 激活超时导致整栈 inactive）。速度链路：controller → cmd_vel_nav → velocity_smoother → cmd_vel_smoothed → collision_monitor → `/cmd_vel`。
+- **DWB 插件有自己的 transform_tolerance（2026-09-09 修复单点导航必失败）**：nav2_params.yaml 里 `controller_server.FollowPath.transform_tolerance`（DWB `transformGlobalPlan` 把 robot pose 从 odom 变到 map 时经 `nav_2d_utils/tf_help` 校验 map→odom stamp 年龄）默认 0.1，曾设 0.2 仍不够——慢仿真下 localizer 1Hz ICP 阻塞使 map→odom stamp 滞后 odom 链 0.19s(峰值 0.7s)，超限即报 "Transform data too old / Unable to transform robot pose into global plan's frame" → Goal failed。已放宽到 2.0（costmap/behavior_server/collision_monitor 同名参数此前已各自放宽，DWB 是当时漏掉的一处；map→odom 两次配准间数值不变，放宽无精度损失）。**凡 TF 时间戳容差问题，需逐节点查每个插件自身的 transform_tolerance**。
+- localizer RViz（显示 `/localizer/map_cloud` + `/fastlio2/body_cloud`，fixed frame=map）已由 `start_navigation.sh` 随栈启动，受 `--no-rviz` 控制。
+- **仿真中途重启会卡死 robot_state_publisher（2026-09-09 实测）**：11:07 用 `start_sim_teleop.sh` 重启仿真（其 cleanup 杀旧 gz/rsp/桥接）时，新 rsp 进程存活且日志打印 "Robot initialized"、URDF 参数完好，但 DDS 参与者僵死——不在 `ros2 node list`、不订阅 `/joint_states`、不发布任何 TF（SIGTERM 也杀不掉，需 kill -9）。症状链：`/tf_static` 无 gimbal 链 → cloud_to_scan 报 "two or more unconnected trees" → `/scan` 无数据（话题存在但 0 发布）→ costmap 无障碍物。修复：`kill -9 <旧rsp_pid>` 后用原 launch 的两个 `/tmp/launch_params_*` 文件重启 rsp 进程即可（`--params-file` 一个含 `use_sim_time: true`，一个含 `robot_description`），TF 树与 `/scan`（~9.8Hz）立即恢复，导航栈其余部分无需重启。**排障口诀：话题存在≠有数据**，`start_navigation.sh` 的 `wait_for_topic` 已改为 `ros2 topic echo --once` 数据级校验，能当场拦住此类故障。
+- **重启仿真的正确顺序**：先停导航栈（`pkill -f start_navigation.sh` 让其 cleanup 带走全栈）→ 再跑 `start_sim_teleop.sh` → 把车归位 spawn → 最后 `start_navigation.sh`。导航栈运行期间重启仿真 = 必踩 rsp 卡死坑。
+- **start_navigation.sh 自带单例清场（2026-09-09）**：脚本启动前 `kill_stale_nav` 自动终止残留导航进程——旧 start_navigation.sh 自身（TERM 触发其 cleanup）、fastlio2 lio_node、localizer_node、livox_to_laserscan/pointcloud_to_scan、`ros2 launch sentry_nav2_bringup` 与全部 `lib/nav2_*`/`opennav_docking` 组件、两个导航侧 rviz（localizer.rviz / nav2_red_scan.rviz），TERM 后 2s 再 KILL 兜底；**不碰仿真侧**（gz/rsp/桥接/omni_drive）。背景：13:0x 用户在 12:20 栈未退的情况下又跑了一份脚本，两套 lio/localizer/nav2 并存——`/fastlio2/lio_odom` 出现 2 个发布者、两份 map→odom 交替广播，localizer 定位持续漂移。**定位莫名漂移先查 `ros2 topic info /fastlio2/lio_odom -v` 的 Publisher count 是否为 1、`pgrep -cf 'lib/nav2_'` 是否单套**。
+
 ## 关键注意点
 
 - **导航**（LIO 定位/建图/规划）依赖 `/livox/lidar` + `/livox/imu`，两者刚体固连，是 FAST-LIO / LIO-SAM 的标准输入。

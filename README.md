@@ -1,10 +1,10 @@
 # gazebo_sentry
 
-面向 RoboMaster 2026 赛季哨兵机器人的 ROS 2 Jazzy 与 Gazebo Sim Harmonic 仿真、建图、定位和控制项目。项目包含仿真工作空间 `rm_sim_26` 与控制算法工作空间 `rm_control_26`。
+面向 RoboMaster 2026 赛季哨兵机器人的 ROS 2 Jazzy 与 Gazebo Sim Harmonic 仿真、建图、定位、导航和控制项目。项目包含仿真工作空间 `rm_sim_26` 与控制算法工作空间 `rm_control_26`。
 
 ## 项目完成情况
 
-当前已完成主体仿真与基础算法链路，项目处于可运行、持续联调阶段。
+当前已完成主体仿真、LIO 建图定位与 Nav2 单点导航全链路，项目处于可运行、持续联调阶段。
 
 ### 已完成
 
@@ -19,20 +19,23 @@
 - [x] 建立控制工作空间，提供命令行、键盘及 PyQt 控制入口
 - [x] 迁入 FAST-LIO2、HBA、PGO、定位与 PCD 转栅格地图相关功能包
 - [x] 打通点云、IMU、TF 和底盘速度控制等主要接口
+- [x] 修复 FAST-LIO2 斜装外参正交化与 IMU 体坐标系变换，里程计稳定输出
+- [x] 打通 FAST-LIO2 + ICP localizer + livox_to_laserscan + Nav2 单点导航全链路
+- [x] 提供 `scripts/start_navigation.sh` 一键启动导航栈（含单例清场与双 RViz）
 
 ### 进行中
 
-- [ ] 完成 FAST-LIO2 建图、重定位与控制工作空间的稳定联调
 - [ ] 使用实车测量值校准质量、惯量、关节限位和云台 PID
 - [ ] 优化底盘及云台碰撞体，改善台阶和网格边缘处的接触表现
-- [ ] 修正并保存统一的 Gazebo 启动视角
+- [ ] 切换回 RMUL 2026 真实场地重建地图，验证导航鲁棒性
 - [ ] 完善导航规划、自动控制与整车闭环验证
 
 ## 目录结构
 
 - `rm_sim_26/`：Gazebo 仿真、机器人与场地模型、传感器和运动插件
-- `rm_control_26/`：FAST-LIO2、定位、建图、控制及地图转换功能包
-- `scripts/`：项目级辅助脚本
+- `rm_control_26/`：FAST-LIO2、ICP 定位、点云转激光扫描、Nav2 导航、控制及地图转换功能包
+- `rm_control_26/maps/`：已保存的点云/栅格地图（`world1` 为当前导航用图）
+- `scripts/`：项目级辅助脚本（仿真、建图、导航一键启动与清场）
 
 ## 环境要求
 
@@ -63,7 +66,34 @@ ros2 launch rm_sim_26 rmuc_2025_sim.launch.py
 
 仿真配置位于 `rm_sim_26/config/sim_config.yaml`。可通过 `robot_model` 切换机器人模型，通过 `lidar_mode` 选择 `auto`、`rgl` 或 `gpu_lidar`。
 
+当前 `rmul_2026_world.world` 使用 20 m × 15 m 平整封闭场地（导航链路联调用），哨兵于 (-5, 0) 出生；RMUL 2026 真实场地模型保留在 `rm_sim_26/models/rmul_2026`，切换回真实场地后需重建地图。
+
+## 启动导航
+
+一键启动定位与 Nav2 单点导航（Fast-LIO2 里程计 → ICP 重定位 → /scan → Nav2）：
+
+```bash
+# 前提：仿真已启动，且哨兵位于出生点 (-5, 0) yaw=0。
+# 车被开走后可先归位再重跑：
+gz service -s /world/default/set_pose --reqtype gz.msgs.Pose --reptype gz.msgs.Boolean \
+  --req 'name: "sentry_bot", position: {x: -5, y: 0, z: 0.3}, orientation: {w: 1}'
+
+./scripts/start_navigation.sh
+```
+
+脚本自动完成：
+
+- 清理残留导航进程（单例保证，不影响仿真侧）
+- 锁定大 yaw 为 0，保证雷达外参恒定
+- 启动 Fast-LIO2、ICP localizer（加载 `maps/world1/pcd/map.pcd`）、livox_to_laserscan、Nav2
+- 启动 Nav2 RViz 与 localizer RViz（`--no-rviz` 关闭）
+- 轮询 `relocalize_check`，定位收敛后才拉起 Nav2
+
+组件日志落盘 `logs/navigation/`。启动后在 RViz 用 2D Goal Pose 发布单点导航目标。
+
 ## 主要接口
+
+### 底盘与云台
 
 - `/cmd_vel`：底盘速度指令
 - `/livox/lidar`：Livox Mid360 点云
@@ -74,9 +104,26 @@ ros2 launch rm_sim_26 rmuc_2025_sim.launch.py
 - `/gimbal/small_yaw/cmd_pos`：小 yaw 位置指令
 - `/gimbal/pitch/cmd_pos`：pitch 位置指令
 
+### 导航栈
+
+- `/fastlio2/lio_odom`：LIO 里程计（odom → base_link）
+- `/fastlio2/body_cloud`：车体系点云
+- `/scan`：点云转出的 2D 激光扫描（Nav2 costmap 输入）
+- `/localizer/map_cloud`：点云地图（localizer RViz 显示）
+- `/localizer/relocalize`、`/localizer/relocalize_check`：重定位请求与收敛检查服务
+
 ## 注意事项
 
 - 修改 `rm_sim_26/models`、`worlds` 或 `launch` 后，需要重新构建 `rm_sim_26`。
-- Mid360 安装在大 yaw 云台上。导航联调时应锁定云台，或确保动态 TF 被算法正确使用。
+- Mid360 安装在大 yaw 云台上。导航脚本启动时会自动锁定大 yaw 为 0；云台自转会导致雷达外参变化、定位漂移。
+- `start_navigation.sh` 自带单例清场；定位莫名漂移时先查 `ros2 topic info /fastlio2/lio_odom -v` 的 Publisher count 是否为 1。
+- 慢仿真（RTF < 1）下 TF 时间戳存在滞后，Nav2 各组件的 `transform_tolerance` 已按需放宽，请勿随意调回默认值。
+- 重启仿真前必须先停导航栈（`pkill -f start_navigation.sh`），顺序：停导航 → 重启仿真 → 车归位 → 重跑导航脚本。
+- `world1` 地图由修复前雷达体系语义构建，导航脚本默认初始位姿为非零补偿值；用修复后 LIO 重建地图后应将 `--x/--y/--z/--yaw` 归零。
 - `build`、`install`、`log` 和运行日志不纳入版本控制，需要在本机重新构建生成。
 
+## 致谢
+
+- [FAST-LIO2](https://github.com/hku-mars/FAST_LIO)：激光惯性里程计
+- [is-buiquocdoanh/livox_to_laserscan](https://github.com/is-buiquocdoanh/livox_to_laserscan)：点云转激光扫描（本仓库在其基础上适配了慢仿真下的 TF 查询与时间戳处理）
+- [ros-navigation/navigation2](https://github.com/ros-navigation/navigation2)：Nav2 导航框架

@@ -1,4 +1,5 @@
 #include "ieskf.h"
+#include <cstdio>
 
 double State::gravity = 9.81;
 
@@ -53,6 +54,9 @@ std::ostream &operator<<(std::ostream &os, const State &state)
 
 void IESKF::predict(const Input &inp, double dt, const M12D &Q)
 {
+    if (!std::isfinite(dt) || !inp.acc.allFinite() || !inp.gyro.allFinite())
+        fprintf(stderr, "[LIO-DIAG] predict bad input: dt=%.9f acc=[%.4f %.4f %.4f] gyro=[%.5f %.5f %.5f]\n",
+                dt, inp.acc(0), inp.acc(1), inp.acc(2), inp.gyro(0), inp.gyro(1), inp.gyro(2));
     V21D delta = V21D::Zero();
     delta.segment<3>(0) = (inp.gyro - m_x.bg) * dt;
     delta.segment<3>(3) = m_x.v * dt;
@@ -73,10 +77,22 @@ void IESKF::predict(const Input &inp, double dt, const M12D &Q)
 
     m_x += delta;
     m_P = m_F * m_P * m_F.transpose() + m_G * Q * m_G.transpose();
+    if (!m_x.r_wi.allFinite() || !m_x.r_il.allFinite() || !m_x.v.allFinite() || !m_x.t_wi.allFinite())
+        fprintf(stderr, "[LIO-DIAG] predict produced bad state: dt=%.9f v=[%.3f %.3f %.3f] t_wi=[%.3f %.3f %.3f] r_wi_finite=%d\n",
+                dt, m_x.v(0), m_x.v(1), m_x.v(2), m_x.t_wi(0), m_x.t_wi(1), m_x.t_wi(2), (int)m_x.r_wi.allFinite());
 }
 
 void IESKF::update()
 {
+    if (!m_x.r_wi.allFinite() || !m_x.r_il.allFinite())
+        fprintf(stderr, "[LIO-DIAG] update entered with bad state! r_wi_finite=%d r_il_finite=%d\n",
+                (int)m_x.r_wi.allFinite(), (int)m_x.r_il.allFinite());
+    if ((m_x.r_wi.transpose() * m_x.r_wi - M3D::Identity()).norm() > 1e-6)
+        fprintf(stderr, "[LIO-DIAG] update entered with non-orthogonal r_wi, err=%.9f\n",
+                (m_x.r_wi.transpose() * m_x.r_wi - M3D::Identity()).norm());
+    if ((m_x.r_il.transpose() * m_x.r_il - M3D::Identity()).norm() > 1e-6)
+        fprintf(stderr, "[LIO-DIAG] update entered with non-orthogonal r_il, err=%.9f\n",
+                (m_x.r_il.transpose() * m_x.r_il - M3D::Identity()).norm());
     State predict_x = m_x;
     SharedState shared_data;
     shared_data.iter_num = 0;
