@@ -22,6 +22,7 @@
 - [x] 修复 FAST-LIO2 斜装外参正交化与 IMU 体坐标系变换，里程计稳定输出
 - [x] 打通 FAST-LIO2 + ICP localizer + livox_to_laserscan + Nav2 单点导航全链路
 - [x] 提供 `scripts/start_navigation.sh` 一键启动导航栈（含单例清场与双 RViz）
+- [x] 移植 KISS-Matcher 全局点云配准（ROS 2 Humble → Jazzy 适配），实测配准收敛
 
 ### 进行中
 
@@ -112,6 +113,28 @@ gz service -s /world/default/set_pose --reqtype gz.msgs.Pose --reptype gz.msgs.B
 - `/localizer/map_cloud`：点云地图（localizer RViz 显示）
 - `/localizer/relocalize`、`/localizer/relocalize_check`：重定位请求与收敛检查服务
 
+## 点云全局配准（KISS-Matcher）
+
+KISS-Matcher（RA-L 2025）已从 ROS 2 Humble 移植到 Jazzy（vendored 于 `rm_control_26/src/KISS-Matcher/`），提供无需初值的全局配准：
+
+```bash
+# 构建（首次配置会从 GitHub 拉 ROBIN 依赖，需网络）
+cd rm_control_26
+source /opt/ros/jazzy/setup.bash
+colcon build --packages-select kiss_matcher_ros
+
+# CLI 配准两个 PCD，输出 4x4 变换与内点判定
+./install/kiss_matcher_ros/lib/kiss_matcher_ros/run_kiss_matcher \
+    <src.pcd> <tgt.pcd> 0.2 nogui quatro
+# 可选 flag: nogui(跳过弹窗) quatro(yaw-only GNC, 车辆场景推荐) noratio(提速)
+# resolution 建议 0.2~0.3; 本场地 0.5 因几何特征弱而不收敛
+
+# ROS 节点(读两 PCD 配准并在 RViz 动画演示)
+ros2 launch kiss_matcher_ros visualizer_launch.py
+```
+
+实测：合成测试恢复已知 60° 旋转误差 <0.2°；80s 驾驶累积点云对 world1 旧地图配准，精确恢复 map→odom 变换（yaw 误差 0.2°、平移 <4cm、0.13s）。
+
 ## 注意事项
 
 - 修改 `rm_sim_26/models`、`worlds` 或 `launch` 后，需要重新构建 `rm_sim_26`。
@@ -125,5 +148,6 @@ gz service -s /world/default/set_pose --reqtype gz.msgs.Pose --reptype gz.msgs.B
 ## 致谢
 
 - [FAST-LIO2](https://github.com/hku-mars/FAST_LIO)：激光惯性里程计
+- [MIT-SPARK/KISS-Matcher](https://github.com/MIT-SPARK/KISS-Matcher)：快速全局点云配准（本仓库完成 ROS 2 Jazzy 移植适配）
 - [is-buiquocdoanh/livox_to_laserscan](https://github.com/is-buiquocdoanh/livox_to_laserscan)：点云转激光扫描（本仓库在其基础上适配了慢仿真下的 TF 查询与时间戳处理）
 - [ros-navigation/navigation2](https://github.com/ros-navigation/navigation2)：Nav2 导航框架
