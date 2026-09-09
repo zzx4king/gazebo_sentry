@@ -111,6 +111,12 @@ public:
         std::vector<double> r_il_vec = config["r_il"].as<std::vector<double>>();
         m_builder_config.t_il << t_il_vec[0], t_il_vec[1], t_il_vec[2];
         m_builder_config.r_il << r_il_vec[0], r_il_vec[1], r_il_vec[2], r_il_vec[3], r_il_vec[4], r_il_vec[5], r_il_vec[6], r_il_vec[7], r_il_vec[8];
+        // 配置里的 r_il 只有有限位小数，正交性误差可能超过 Sophus SO3(Matrix) 断言阈值，
+        // 在此投影到最近的旋转矩阵，保证严格正交。
+        Eigen::JacobiSVD<Eigen::Matrix3d> svd(m_builder_config.r_il, Eigen::ComputeFullU | Eigen::ComputeFullV);
+        m_builder_config.r_il = svd.matrixU() * svd.matrixV().transpose();
+        if (m_builder_config.r_il.determinant() < 0)
+            m_builder_config.r_il.col(2) *= -1.0;
         m_builder_config.lidar_cov_inv = config["lidar_cov_inv"].as<double>();
     }
 
@@ -123,9 +129,12 @@ public:
             RCLCPP_WARN(this->get_logger(), "IMU Message is out of order");
             std::deque<IMUData>().swap(m_state_data.imu_buffer);
         }
-        m_state_data.imu_buffer.emplace_back(V3D(msg->linear_acceleration.x, msg->linear_acceleration.y, msg->linear_acceleration.z),
-                                             V3D(msg->angular_velocity.x, msg->angular_velocity.y, msg->angular_velocity.z),
-                                             timestamp);
+        // livox 内置 IMU 与雷达坐标系平行同源，而 r_il 是 livox -> base_link。
+        // 在此把 IMU 测量旋转到 base_link 系，使 LIO 状态(body_frame)与
+        // base_link 语义一致：重力对齐后 r_wi 为水平姿态，odom->base_link 不带斜装 roll。
+        V3D acc = m_builder_config.r_il * V3D(msg->linear_acceleration.x, msg->linear_acceleration.y, msg->linear_acceleration.z);
+        V3D gyro = m_builder_config.r_il * V3D(msg->angular_velocity.x, msg->angular_velocity.y, msg->angular_velocity.z);
+        m_state_data.imu_buffer.emplace_back(acc, gyro, timestamp);
         m_state_data.last_imu_time = timestamp;
     }
     void lidarCB(const sensor_msgs::msg::PointCloud2::SharedPtr msg)

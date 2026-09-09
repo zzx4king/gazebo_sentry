@@ -183,8 +183,10 @@ if [[ ! -x "${NODE_EXEC}" ]]; then
     exit 1
 fi
 
-# 检查 nav2_map_server（map_saver_cli）是否可用
-if ! ros2 pkg list 2>/dev/null | grep -q "^nav2_map_server$"; then
+# 检查 nav2_map_server（map_saver_cli）是否可用。
+# 不使用 `ros2 pkg list | grep -q`：脚本启用了 pipefail，grep 提前退出时
+# ros2 可能因 SIGPIPE 返回非零，进而把已安装的包误判为缺失。
+if ! ros2 pkg prefix nav2_map_server >/dev/null 2>&1; then
     log_error "未找到 nav2_map_server 包，map_saver_cli 不可用"
     log_error "请安装: sudo apt install ros-\${ROS_DISTRO}-nav2-map-server"
     exit 1

@@ -1,4 +1,6 @@
 #include "imu_processor.h"
+#include <cstdio>
+#include <cmath>
 
 IMUProcessor::IMUProcessor(Config &config, std::shared_ptr<IESKF> kf) : m_config(config), m_kf(kf)
 {
@@ -45,6 +47,9 @@ bool IMUProcessor::initialize(SyncPackage &package)
 
     m_last_imu = m_imu_cache.back();
     m_last_propagate_end_time = package.cloud_end_time;
+    fprintf(stderr, "[LIO-DIAG] init: n=%zu acc_mean=[%.4f %.4f %.4f] gyro_mean=[%.6f %.6f %.6f] cloud=[%.3f..%.3f]\n",
+            m_imu_cache.size(), acc_mean(0), acc_mean(1), acc_mean(2),
+            gyro_mean(0), gyro_mean(1), gyro_mean(2), package.cloud_start_time, package.cloud_end_time);
     return true;
 }
 
@@ -94,6 +99,10 @@ void IMUProcessor::undistort(SyncPackage &package)
     }
 
     dt = propagate_time_end - imu_time_end;
+    if (!std::isfinite(dt) || std::fabs(dt) > 1.0)
+        fprintf(stderr, "[LIO-WARN] undistort abnormal dt=%.6f: imus=%zu imu_end=%.3f cloud=[%.3f..%.3f] last_prop=%.3f\n",
+                dt, package.imus.size(), imu_time_end, package.cloud_start_time, package.cloud_end_time,
+                m_last_propagate_end_time);
     m_kf->predict(inp, dt, m_Q);
     m_last_imu = m_imu_cache.back();
     m_last_propagate_end_time = propagate_time_end;
