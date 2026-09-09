@@ -11,6 +11,10 @@ ROS_SETUP="/opt/ros/jazzy/setup.bash"
 MAP_YAML="${CTRL_WS}/maps/world1/pgm/map.yaml"
 MAP_PCD="${CTRL_WS}/maps/world1/pcd/map.pcd"
 RVIZ=true
+# 自动初始位姿: 启动时采集点云, 经 KISS-Matcher/几何搜索双引擎配准出
+# T_map_body 喂给 relocalize(车可在场内任意位置); --manual-pose 跳过,
+# 使用下方硬编码值(仅对"车在 spawn 点 + world1 旧地图"有效)。
+AUTO_POSE=true
 # world1 地图是在旧"雷达体语义"下建的(odom 原点=建图起点雷达位姿, x 轴沿雷达朝向)。
 # LIO 修复后 odom 系为 base_link 语义(原点=车体初始位姿, x 轴沿车头),
 # 因此初始定位需给出两者的变换: 平移约 -Rot_z(77.4°)*t_il, yaw +77.4°(1.35 rad)。
@@ -27,13 +31,16 @@ log() { echo "[$(date +%H:%M:%S)] $*"; }
 fail() { echo "[错误] $*" >&2; exit 1; }
 
 usage() {
-    echo "用法: bash scripts/start_navigation.sh [--no-rviz] [--x 米] [--y 米] [--z 米] [--yaw 弧度] [--pitch 弧度] [--roll 弧度]"
-    echo "  默认初始位姿对应 world1 旧地图; 若重建地图后请传 --x 0 --y 0 --z 0 --yaw 0"
+    echo "用法: bash scripts/start_navigation.sh [--no-rviz] [--manual-pose] [--x 米] [--y 米] [--z 米] [--yaw 弧度] [--pitch 弧度] [--roll 弧度]"
+    echo "  默认自动估计初始位姿(KISS-Matcher/几何搜索, 车可在场内任意位置)"
+    echo "  --manual-pose: 跳过自动估计, 使用硬编码默认值(仅对 spawn 点 + world1 旧地图有效)"
+    echo "  若重建地图后用 --manual-pose, 请传 --x 0 --y 0 --z 0 --yaw 0"
 }
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --no-rviz) RVIZ=false; shift ;;
+        --manual-pose) AUTO_POSE=false; shift ;;
         --x) INITIAL_X="$2"; shift 2 ;;
         --y) INITIAL_Y="$2"; shift 2 ;;
         --z) INITIAL_Z="$2"; shift 2 ;;
@@ -133,6 +140,10 @@ export ROS_LOG_DIR="${NAV_LOG_DIR}"
 log "清场: 终止残留导航进程(仅导航侧, 不碰仿真)..."
 kill_stale_nav
 
+# /clock 必须有数据: 时钟桥僵死时(进程存活但 DDS 参与者已死)话题存在却 0 发布者,
+# 所有 use_sim_time 节点时钟冻结, costmap 永不发布而导航表面正常(2026-09-09 实测)。
+# 排查: pgrep -af 'parameter_bridge /clock'; 桥僵死 SIGTERM 杀不掉, 需 kill -9 后重启仿真。
+wait_for_topic /clock 30 || fail "未检测到 /clock 数据，仿真时钟桥可能僵死，请重启仿真"
 wait_for_topic /livox/lidar 30 || fail "未检测到 /livox/lidar，请先启动仿真"
 wait_for_topic /livox/imu 30 || fail "未检测到 /livox/imu，请先启动仿真"
 
@@ -142,6 +153,35 @@ ros2 topic pub --once /gimbal/big_yaw/cmd_pos std_msgs/msg/Float64 "{data: 0.0}"
 log "启动 Fast-LIO2 定位里程计（不启动其 RViz，不执行离线建图流程）..."
 start_component fastlio2 ros2 launch fastlio2 lio_launch.py use_sim_time:=true rviz:=false
 wait_for_topic /fastlio2/lio_odom 60 || { tail -20 "${NAV_LOG_DIR}/fastlio2.log" >&2; fail "Fast-LIO2 未发布里程计"; }
+
+# ===== 自动初始位姿: 静止采集 -> 双引擎配准 -> 失败则驾驶采集重试 -> 仍失败回退硬编码 =====
+KM_HELPER="${SCRIPT_DIR}/km_initial_pose.py"
+KM_BIN="${CTRL_WS}/install/kiss_matcher_ros/lib/kiss_matcher_ros/run_kiss_matcher"
+if [ "${AUTO_POSE}" = "true" ]; then
+    if [ ! -f "${KM_HELPER}" ] || [ ! -x "${KM_BIN}" ]; then
+        log "警告: km_initial_pose.py 或 kiss_matcher_ros 未构建, 跳过自动位姿, 用默认值"
+    else
+        log "自动估计初始位姿: 静止采集 12s + KISS-Matcher/几何搜索双引擎..."
+        KM_RESULT=$(timeout 150 python3 "${KM_HELPER}" \
+            --km-bin "${KM_BIN}" --map-pcd "${MAP_PCD}" \
+            --collect-sec 12 --resolution 0.2 2>>"${NAV_LOG_DIR}/km_pose.log")
+        KM_RC=$?
+        if [ ${KM_RC} -ne 0 ] && [ ${KM_RC} -ne 2 ]; then
+            log "静止采集未收敛(退出码 ${KM_RC}), 驾驶采集重试(约 40s)..."
+            KM_RESULT=$(timeout 180 python3 "${KM_HELPER}" \
+                --km-bin "${KM_BIN}" --map-pcd "${MAP_PCD}" \
+                --collect-sec 40 --resolution 0.2 --drive 2>>"${NAV_LOG_DIR}/km_pose.log")
+            KM_RC=$?
+        fi
+        if [ ${KM_RC} -eq 0 ] && [ -n "${KM_RESULT}" ]; then
+            read -r INITIAL_X INITIAL_Y INITIAL_Z INITIAL_YAW INITIAL_PITCH INITIAL_ROLL <<< "${KM_RESULT}"
+            log "初始位姿估计成功: x=${INITIAL_X} y=${INITIAL_Y} z=${INITIAL_Z} yaw=${INITIAL_YAW}"
+        else
+            log "警告: 自动位姿估计失败(退出码 ${KM_RC}), 回退默认值(仅对 spawn 点 + 旧地图有效)"
+            tail -8 "${NAV_LOG_DIR}/km_pose.log" >&2 || true
+        fi
+    fi
+fi
 
 # localizer_launch.py 会再次启动 Fast-LIO2，造成两个建图/里程计实例。
 # 此处只启动定位节点，复用上面唯一的 Fast-LIO2 实例。

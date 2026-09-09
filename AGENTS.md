@@ -93,6 +93,18 @@
 - **重启仿真的正确顺序**：先停导航栈（`pkill -f start_navigation.sh` 让其 cleanup 带走全栈）→ 再跑 `start_sim_teleop.sh` → 把车归位 spawn → 最后 `start_navigation.sh`。导航栈运行期间重启仿真 = 必踩 rsp 卡死坑。
 - **start_navigation.sh 自带单例清场（2026-09-09）**：脚本启动前 `kill_stale_nav` 自动终止残留导航进程——旧 start_navigation.sh 自身（TERM 触发其 cleanup）、fastlio2 lio_node、localizer_node、livox_to_laserscan/pointcloud_to_scan、`ros2 launch sentry_nav2_bringup` 与全部 `lib/nav2_*`/`opennav_docking` 组件、两个导航侧 rviz（localizer.rviz / nav2_red_scan.rviz），TERM 后 2s 再 KILL 兜底；**不碰仿真侧**（gz/rsp/桥接/omni_drive）。背景：13:0x 用户在 12:20 栈未退的情况下又跑了一份脚本，两套 lio/localizer/nav2 并存——`/fastlio2/lio_odom` 出现 2 个发布者、两份 map→odom 交替广播，localizer 定位持续漂移。**定位莫名漂移先查 `ros2 topic info /fastlio2/lio_odom -v` 的 Publisher count 是否为 1、`pgrep -cf 'lib/nav2_'` 是否单套**。
 
+## KISS-Matcher 点云全局配准（2026-09-09 移植，Humble→Jazzy）
+
+- 位置：`rm_control_26/src/KISS-Matcher/{cpp,ros}`（vendored 自 MIT-SPARK/KISS-Matcher，去 .git/python/examples；`cpp/` 带 COLCON_IGNORE，由 ros 包 CMake `add_subdirectory` 引入，首次配置时 FetchContent 拉 ROBIN v1.2.7 tarball，需网络）。
+- **Jazzy 适配点**：① 裁剪 gtsam/small_gicp 依赖——`kiss_matcher_sam`/`inter_frame_alignment` 两目标包在 `BUILD_KM_SAM` option（默认 OFF，Ubuntu 24.04 无 gtsam apt 包），package.xml 已去 gtsam；② 强制 `USE_SYSTEM_TBB=ON`（系统 oneTBB 2021.11）；③ `run_kiss_matcher` 支持 `nogui`（跳过 PCLVisualizer 弹窗，服务器/脚本必需）与 `quatro`/`noratio` 调优 flag；④ `visualizer_launch.py` 的 `os.getcwd()` 改为 `get_package_share_directory`。
+- 构建：`colcon build --packages-select kiss_matcher_ros`（约 1 分钟；**构建失败留残缺 FetchContent 缓存时报 "robinTargets.cmake not found"，删 `build/kiss_matcher_ros` 重试即好**——上游 README 记录的同款坑）。**务必先 source /opt/ros/jazzy/setup.bash 再 colcon build**，否则 ament_cmake 找不到。
+- CLI 用法：`ros2 run` 不可直接传参，直接调可执行文件 `install/kiss_matcher_ros/lib/kiss_matcher_ros/run_kiss_matcher <src.pcd> <tgt.pcd> <resolution> [yaw_aug_deg] [roll_aug_deg] [stress] [nogui] [quatro] [noratio]`；输出 4×4 变换矩阵（src→tgt）、内点数与成功判定（final inliers ≥5），并保存 `<src>_warped.pcd`。
+- ROS 节点：`registration_visualizer`（读两 PCD→配准→/src_cloud、/tgt_cloud 动画发布，参数 base_dir/src_pcd_path/tgt_pcd_path/resolution/moving_rate/frame_rate，**路径语义为 base_dir+相对路径，参数必须带小数点否则 Jazzy 抛 InvalidParameterTypeException**）。
+- **收敛实测（world1 地图）**：合成测试（map.pcd 自配准+60° yaw 扰动）恢复误差 <0.2°、0.07s；真实测试（80s 驾驶累积 328 万点 odom 系云 vs 旧语义 map.pcd）精确恢复 map→odom：yaw 1.347 vs 真值 1.350 rad（0.2°）、平移误差 <4cm、31 内点、0.13s。
+- **调参要点（本场地实测）**：`resolution 0.5` 时特征对应太少必失败（平面地板+平行墙几何弱），**0.2~0.3 + `quatro`（yaw-only GNC，车辆场景必开）稳定收敛**；`use_quatro_` 关闭时输出 z 翻转的错解。
+- **实测坑**：① `/fastlio2/world_cloud` 是**单帧**变换到 odom 系（非累积地图），做地图级配准需多帧拼接（临时脚本边驾驶边累积）；② `ros2 topic pub --once` 1Hz 驱动车走不动（omni_drive 侧指令刷新机制），需 `pub -r 10` 持续发布；③ 采集/驱动脚本用 `pkill -f "lio_launch.py"` 会匹配到自身命令行误杀 shell，用 `pgrep -x lio_node` 精确杀。
+- 潜在用途：替代 start_navigation.sh 手填初始位姿——用 KISS-Matcher 对（累积点云, map.pcd）求 T_map_odom 填入 relocalize；或集成进 localizer 做全局重定位（未做，需改 localizer C++）。
+
 ## 关键注意点
 
 - **导航**（LIO 定位/建图/规划）依赖 `/livox/lidar` + `/livox/imu`，两者刚体固连，是 FAST-LIO / LIO-SAM 的标准输入。
