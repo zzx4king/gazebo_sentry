@@ -3,7 +3,7 @@ project(sentry_nav2_bringup)
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY launch config rviz
+install(DIRECTORY launch config rviz behavior_trees
   DESTINATION share/sentry_nav2_bringup
 )
 
