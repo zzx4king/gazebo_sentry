@@ -91,9 +91,14 @@ target_link_libraries(${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH "${ACADOS_LIB_DIR}"
+    # libacados.so itself depends on qpOASES/HPIPM/BLASFEO.  DT_RUNPATH is
+    # not used to resolve those transitive dependencies, so keep the bundled
+    # runtime beside the controller and use a legacy DT_RPATH rooted at the
+    # installed plugin directory.
+    INSTALL_RPATH "$ORIGIN"
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
+target_link_options(${PROJECT_NAME} PRIVATE "LINKER:--disable-new-dtags")
 
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
@@ -121,6 +126,18 @@ install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
+)
+
+# Bundle the acados runtime required by the generated MPC solver.  This keeps
+# the installed Nav2 plugin self-contained instead of depending on a source-tree
+# path or a manually configured LD_LIBRARY_PATH.
+install(FILES
+  ${ACADOS_LIB_DIR}/libacados.so
+  ${ACADOS_LIB_DIR}/libhpipm.so
+  ${ACADOS_LIB_DIR}/libblasfeo.so
+  ${ACADOS_LIB_DIR}/libblasfeo.so.0
+  ${ACADOS_LIB_DIR}/libqpOASES_e.so
+  DESTINATION lib
 )
 
 install(DIRECTORY include/

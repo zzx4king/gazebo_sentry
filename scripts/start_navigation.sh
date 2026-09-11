@@ -219,6 +219,18 @@ if [ "${RELOC_OK}" != "true" ]; then
 fi
 log "定位收敛，map -> odom 持续发布中。"
 
+# 仿真曾出现 robot_state_publisher 进程仍在、但其 DDS 节点和 TF 发布已消失的
+# 半失效状态。此时 /livox/lidar 仍有数据，点云转 scan 却会永久等待
+# base_link -> livox_lidar。先验证 TF；缺失时使用与 fastlio2 外参一致的固定
+# 变换兜底。导航开始前已将大 yaw 锁为 0，因此该固定外参在导航期间有效。
+if ! timeout 5 ros2 run tf2_ros tf2_echo base_link livox_lidar >/dev/null 2>&1; then
+    log "警告: 仿真 robot_state_publisher 未提供 base_link -> livox_lidar，启动固定 TF 兜底..."
+    start_component lidar_static_tf ros2 run tf2_ros static_transform_publisher \
+        --x -0.1963 --y -0.0880 --z 0.3361 \
+        --roll 1.0472 --pitch 0 --yaw -1.3521 \
+        --frame-id base_link --child-frame-id livox_lidar
+fi
+
 log "启动 livox_to_laserscan，发布 /scan..."
 start_component livox_to_laserscan ros2 launch livox_to_laserscan livox_scan.launch.py
 wait_for_topic /scan 30 || { tail -20 "${NAV_LOG_DIR}/livox_to_laserscan.log" >&2; fail "未检测到 /scan"; }
