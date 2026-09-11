@@ -156,64 +156,12 @@
       <direction>0 0 -1</direction>
     </light>
 
-    <!-- 20 m x 15 m 平整场地 -->
-    <model name='flat_enclosed_arena'>
+    <model name='rmul_2026'>
+      <include>
+        <uri>model://rmul_2026</uri>
+      </include>
+      <pose>0.0 0.0 0 0 0 0</pose>
       <static>true</static>
-
-      <link name='ground'>
-        <collision name='collision'>
-          <geometry>
-            <box><size>20 15 0.1</size></box>
-          </geometry>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <box><size>20 15 0.1</size></box>
-          </geometry>
-          <material>
-            <ambient>0.55 0.55 0.55 1</ambient>
-            <diffuse>0.65 0.65 0.65 1</diffuse>
-            <roughness>0.9</roughness>
-          </material>
-        </visual>
-        <pose>0 0 -0.05 0 0 0</pose>
-      </link>
-
-      <!-- 围墙高 1.5 m、厚 0.2 m，内侧可用区域约 19.8 m x 14.8 m -->
-      <link name='north_wall'>
-        <pose>0 7.5 0.75 0 0 0</pose>
-        <collision name='collision'><geometry><box><size>20 0.2 1.5</size></box></geometry></collision>
-        <visual name='visual'><geometry><box><size>20 0.2 1.5</size></box></geometry><material><ambient>0.35 0.4 0.45 1</ambient><diffuse>0.45 0.5 0.55 1</diffuse></material></visual>
-      </link>
-      <link name='south_wall'>
-        <pose>0 -7.5 0.75 0 0 0</pose>
-        <collision name='collision'><geometry><box><size>20 0.2 1.5</size></box></geometry></collision>
-        <visual name='visual'><geometry><box><size>20 0.2 1.5</size></box></geometry><material><ambient>0.35 0.4 0.45 1</ambient><diffuse>0.45 0.5 0.55 1</diffuse></material></visual>
-      </link>
-      <link name='east_wall'>
-        <pose>10 0 0.75 0 0 0</pose>
-        <collision name='collision'><geometry><box><size>0.2 15 1.5</size></box></geometry></collision>
-        <visual name='visual'><geometry><box><size>0.2 15 1.5</size></box></geometry><material><ambient>0.35 0.4 0.45 1</ambient><diffuse>0.45 0.5 0.55 1</diffuse></material></visual>
-      </link>
-      <link name='west_wall'>
-        <pose>-10 0 0.75 0 0 0</pose>
-        <collision name='collision'><geometry><box><size>0.2 15 1.5</size></box></geometry></collision>
-        <visual name='visual'><geometry><box><size>0.2 15 1.5</size></box></geometry><material><ambient>0.35 0.4 0.45 1</ambient><diffuse>0.45 0.5 0.55 1</diffuse></material></visual>
-      </link>
-
-      <!-- 两个障碍物，保留中心和机器人出生点附近的通行空间 -->
-      <link name='obstacle_box_northwest'>
-        <pose>-4 2.5 0.6 0 0 0.25</pose>
-        <collision name='collision'><geometry><box><size>2.5 1.2 1.2</size></box></geometry></collision>
-        <visual name='visual'><geometry><box><size>2.5 1.2 1.2</size></box></geometry><material><ambient>0.75 0.25 0.15 1</ambient><diffuse>0.85 0.3 0.18 1</diffuse></material></visual>
-      </link>
-
-      <link name='obstacle_box_southeast'>
-        <pose>4 -2.5 0.75 0 0 -0.35</pose>
-        <collision name='collision'><geometry><box><size>3 1 1.5</size></box></geometry></collision>
-        <visual name='visual'><geometry><box><size>3 1 1.5</size></box></geometry><material><ambient>0.15 0.35 0.75 1</ambient><diffuse>0.18 0.42 0.85 1</diffuse></material></visual>
-      </link>
-
     </model>
   </world>
 </sdf>

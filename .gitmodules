@@ -1,0 +1,3 @@
+[submodule "rm_control_26/src/third_party/acados"]
+	path = rm_control_26/src/third_party/acados
+	url = https://github.com/acados/acados.git

@@ -8,21 +8,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "${SCRIPT_DIR}")"
 CTRL_WS="${PROJECT_ROOT}/rm_control_26"
 ROS_SETUP="/opt/ros/jazzy/setup.bash"
-MAP_YAML="${CTRL_WS}/maps/world1/pgm/map.yaml"
-MAP_PCD="${CTRL_WS}/maps/world1/pcd/map.pcd"
+MAP_YAML="${CTRL_WS}/maps/rmul26/pgm/map1.yaml"
+MAP_PCD="${CTRL_WS}/maps/rmul26/pcd/map.pcd"
 RVIZ=true
 # 自动初始位姿: 启动时采集点云, 经 KISS-Matcher/几何搜索双引擎配准出
 # T_map_body 喂给 relocalize(车可在场内任意位置); --manual-pose 跳过,
-# 使用下方硬编码值(仅对"车在 spawn 点 + world1 旧地图"有效)。
+# 使用下方硬编码值(仅对"车在 rmul26 建图起点"有效)。
 AUTO_POSE=true
-# world1 地图是在旧"雷达体语义"下建的(odom 原点=建图起点雷达位姿, x 轴沿雷达朝向)。
-# LIO 修复后 odom 系为 base_link 语义(原点=车体初始位姿, x 轴沿车头),
-# 因此初始定位需给出两者的变换: 平移约 -Rot_z(77.4°)*t_il, yaw +77.4°(1.35 rad)。
-# 若用修复后的 LIO 重建地图, 请把以下默认值改回 0。
-INITIAL_X=-0.043
-INITIAL_Y=0.211
-INITIAL_Z=-0.336
-INITIAL_YAW=1.350
+# rmul26 地图为 LIO 修复后所建(odom 原点=建图起点车体位姿, x 轴沿车头),
+# 车回到建图起点时 T_map_odom 为单位变换, 故默认值全 0。
+# 若换回旧"雷达体语义"地图(如 world1), 需改为对应变换:
+# 平移约 -Rot_z(77.4°)*t_il, yaw +77.4°(1.35 rad)。
+INITIAL_X=0.0
+INITIAL_Y=0.0
+INITIAL_Z=0.0
+INITIAL_YAW=0.0
 INITIAL_PITCH=0.0
 INITIAL_ROLL=0.0
 PIDS=()
@@ -33,8 +33,8 @@ fail() { echo "[错误] $*" >&2; exit 1; }
 usage() {
     echo "用法: bash scripts/start_navigation.sh [--no-rviz] [--manual-pose] [--x 米] [--y 米] [--z 米] [--yaw 弧度] [--pitch 弧度] [--roll 弧度]"
     echo "  默认自动估计初始位姿(KISS-Matcher/几何搜索, 车可在场内任意位置)"
-    echo "  --manual-pose: 跳过自动估计, 使用硬编码默认值(仅对 spawn 点 + world1 旧地图有效)"
-    echo "  若重建地图后用 --manual-pose, 请传 --x 0 --y 0 --z 0 --yaw 0"
+    echo "  --manual-pose: 跳过自动估计, 使用硬编码默认值(全 0, 仅对车在 rmul26 建图起点有效)"
+    echo "  车不在建图起点时用 --manual-pose, 请自行传 --x/--y/--z/--yaw"
 }
 
 while [ $# -gt 0 ]; do
@@ -177,7 +177,7 @@ if [ "${AUTO_POSE}" = "true" ]; then
             read -r INITIAL_X INITIAL_Y INITIAL_Z INITIAL_YAW INITIAL_PITCH INITIAL_ROLL <<< "${KM_RESULT}"
             log "初始位姿估计成功: x=${INITIAL_X} y=${INITIAL_Y} z=${INITIAL_Z} yaw=${INITIAL_YAW}"
         else
-            log "警告: 自动位姿估计失败(退出码 ${KM_RC}), 回退默认值(仅对 spawn 点 + 旧地图有效)"
+            log "警告: 自动位姿估计失败(退出码 ${KM_RC}), 回退默认值(全 0, 仅对车在 rmul26 建图起点有效)"
             tail -8 "${NAV_LOG_DIR}/km_pose.log" >&2 || true
         fi
     fi
@@ -199,7 +199,7 @@ if [ "${RVIZ}" = "true" ]; then
         --ros-args -p use_sim_time:=true
 fi
 
-log "加载已有 world1 点云地图进行定位并发布初始定位信息..."
+log "加载已有 rmul26 点云地图进行定位并发布初始定位信息..."
 ros2 service call /localizer/relocalize interface/srv/Relocalize "{pcd_path: '${MAP_PCD}', x: ${INITIAL_X}, y: ${INITIAL_Y}, z: ${INITIAL_Z}, yaw: ${INITIAL_YAW}, pitch: ${INITIAL_PITCH}, roll: ${INITIAL_ROLL}}" >/dev/null || fail "初始定位请求失败"
 
 # relocalize 服务返回成功仅代表已受理, 还需等配准收敛(发布 map->odom), 否则 Nav2 激活会超时失败。
@@ -219,11 +219,23 @@ if [ "${RELOC_OK}" != "true" ]; then
 fi
 log "定位收敛，map -> odom 持续发布中。"
 
+# 仿真曾出现 robot_state_publisher 进程仍在、但其 DDS 节点和 TF 发布已消失的
+# 半失效状态。此时 /livox/lidar 仍有数据，点云转 scan 却会永久等待
+# base_link -> livox_lidar。先验证 TF；缺失时使用与 fastlio2 外参一致的固定
+# 变换兜底。导航开始前已将大 yaw 锁为 0，因此该固定外参在导航期间有效。
+if ! timeout 5 ros2 run tf2_ros tf2_echo base_link livox_lidar >/dev/null 2>&1; then
+    log "警告: 仿真 robot_state_publisher 未提供 base_link -> livox_lidar，启动固定 TF 兜底..."
+    start_component lidar_static_tf ros2 run tf2_ros static_transform_publisher \
+        --x -0.1963 --y -0.0880 --z 0.3361 \
+        --roll 1.0472 --pitch 0 --yaw -1.3521 \
+        --frame-id base_link --child-frame-id livox_lidar
+fi
+
 log "启动 livox_to_laserscan，发布 /scan..."
 start_component livox_to_laserscan ros2 launch livox_to_laserscan livox_scan.launch.py
 wait_for_topic /scan 30 || { tail -20 "${NAV_LOG_DIR}/livox_to_laserscan.log" >&2; fail "未检测到 /scan"; }
 
-log "启动 Nav2，加载 world1 栅格地图..."
+log "启动 Nav2，加载 rmul26 栅格地图..."
 start_component nav2 ros2 launch sentry_nav2_bringup single_point_navigation.launch.py map:="${MAP_YAML}" rviz:="${RVIZ}" use_sim_time:=true
 
 log "TF 链应为 map -> odom -> base_link；传感器固定 TF 由仿真 robot_state_publisher 提供。"
